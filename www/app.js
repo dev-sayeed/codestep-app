@@ -1,257 +1,344 @@
-let state = JSON.parse(localStorage.getItem("codestep_v3")) || {
-  xp: 0,
-  category: null,
-  unlockedModules: { html: 0, css: 0, python: 0, c: 0 }
+const CATEGORIES = {
+  sports: { label: "⚽ Sports Theme", word: "Match", item: "Goal", num: 10 },
+  nature: { label: "🌿 Nature Theme", word: "Forest", item: "Tree", num: 25 },
+  food:   { label: "🍕 Food Theme",   word: "Menu",   item: "Pizza", num: 50 },
+  space:  { label: "🚀 Space Theme",  word: "Orbit",  item: "Rocket", num: 99 }
 };
 
-let currentCourseKey = null;
-let currentModuleIdx = 0;
-let stepIndex = 0;
-let stepSolved = false;
+const ALL_COURSES = {
+  html: COURSE_HTML,
+  css: COURSE_CSS,
+  python: COURSE_PYTHON,
+  c: COURSE_C
+};
 
-const categoryScreen = document.getElementById("category-screen");
-const homeScreen = document.getElementById("home-screen");
-const roadmapScreen = document.getElementById("roadmap-screen");
-const lessonScreen = document.getElementById("lesson-screen");
-const completeScreen = document.getElementById("complete-screen");
-const taskInput = document.getElementById("task-input");
-const taskHint = document.getElementById("task-hint");
+const DEFAULT_STATE = {
+  onboarded: false,
+  xp: 0,
+  category: "sports",
+  solvedIds: [] // Stores unique task IDs like "html_0_0" so progress never resets
+};
 
-// Block Copy, Cut, Paste, and Context Menu
-["copy", "cut", "paste", "contextmenu"].forEach(evt => {
-  document.getElementById("code-box").addEventListener(evt, e => e.preventDefault());
-  taskInput.addEventListener(evt, e => {
-    e.preventDefault();
-    const feedback = document.getElementById("feedback-msg");
-    feedback.style.color = "#B45309";
-    feedback.textContent = "⚠️ Copy/paste is disabled—type it out to build real memory!";
-  });
-});
-
-function saveState() {
-  localStorage.setItem("codestep_v3", JSON.stringify(state));
-  document.getElementById("xp-display").textContent = `⭐ ${state.xp} XP`;
+function loadState() {
+  try {
+    const raw = localStorage.getItem("codestep_pro_v1") || localStorage.getItem("codestep_backup");
+    if (!raw) return { ...DEFAULT_STATE };
+    const parsed = JSON.parse(raw);
+    return {
+      onboarded: Boolean(parsed.onboarded),
+      xp: Number(parsed.xp) || 0,
+      category: CATEGORIES[parsed.category] ? parsed.category : "sports",
+      solvedIds: Array.isArray(parsed.solvedIds) ? parsed.solvedIds : []
+    };
+  } catch (e) {
+    return { ...DEFAULT_STATE };
+  }
 }
 
-function applyCategoryTheme(catKey) {
+let state = loadState();
+let activeCourseKey = null;
+let activeModuleIdx = 0;
+let activeTaskIdx = 0;
+let taskSolved = false;
+
+function saveState() {
+  const serialized = JSON.stringify(state);
+  localStorage.setItem("codestep_pro_v1", serialized);
+  localStorage.setItem("codestep_backup", serialized);
+  document.getElementById("xp-display").textContent = `⭐ ${state.xp} XP`;
+  updateProgressScreen();
+}
+
+function applyTheme(catKey) {
   state.category = catKey;
   document.body.setAttribute("data-theme", catKey);
   document.getElementById("active-theme-label").textContent = CATEGORIES[catKey].label;
   saveState();
 }
 
-function showScreen(screenEl) {
-  [categoryScreen, homeScreen, roadmapScreen, lessonScreen, completeScreen].forEach(s =>
-    s.classList.remove("active")
-  );
-  screenEl.classList.add("active");
+function showTopScreen(id) {
+  document.getElementById("welcome-screen").classList.remove("active");
+  document.getElementById("category-screen").classList.remove("active");
+  document.getElementById("main-container").classList.add("hidden");
+
+  if (id === "main-container") {
+    document.getElementById("main-container").classList.remove("hidden");
+  } else {
+    document.getElementById(id).classList.add("active");
+  }
 }
+
+function switchTab(tabId) {
+  document.querySelectorAll(".tab-view").forEach(v => v.classList.remove("active"));
+  document.getElementById(tabId).classList.add("active");
+
+  document.querySelectorAll(".nav-tab").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.tab === tabId);
+  });
+  window.scrollTo(0, 0);
+}
+
+// Onboarding & Theme Picker
+document.getElementById("get-started-btn").onclick = () => showTopScreen("category-screen");
 
 document.querySelectorAll(".cat-card").forEach(btn => {
   btn.onclick = () => {
-    applyCategoryTheme(btn.dataset.cat);
-    renderHome();
+    state.onboarded = true;
+    applyTheme(btn.dataset.cat);
+    renderCourses();
+    showTopScreen("main-container");
+    switchTab("home-screen");
   };
 });
 
-document.getElementById("change-theme-btn").onclick = () => showScreen(categoryScreen);
+document.getElementById("switch-theme-btn").onclick = () => showTopScreen("category-screen");
 
-function renderHome() {
-  saveState();
+// Bottom Nav Tabs
+document.querySelectorAll(".nav-tab").forEach(btn => {
+  btn.onclick = () => {
+    if (btn.dataset.tab === "home-screen") renderCourses();
+    if (btn.dataset.tab === "progress-screen") updateProgressScreen();
+    switchTab(btn.dataset.tab);
+  };
+});
+
+// Block Copy/Paste
+const taskInput = document.getElementById("task-input");
+["copy", "cut", "paste", "contextmenu"].forEach(evt => {
+  document.getElementById("example-box").addEventListener(evt, e => e.preventDefault());
+  taskInput.addEventListener(evt, e => {
+    e.preventDefault();
+    const fb = document.getElementById("feedback-msg");
+    fb.style.color = "#B45309";
+    fb.textContent = "⚠️ Copy/paste disabled—type it out to lock it in your memory!";
+  });
+});
+
+// Helper to personalize text with the user's chosen theme
+function themeText(str) {
+  const t = CATEGORIES[state.category];
+  return str
+    .replace(/\{WORD\}/g, t.word)
+    .replace(/\{word\}/g, t.word.toLowerCase())
+    .replace(/\{ITEM\}/g, t.item)
+    .replace(/\{item\}/g, t.item.toLowerCase())
+    .replace(/\{NUM\}/g, t.num);
+}
+
+function getCourseSolvedCount(courseKey) {
+  return state.solvedIds.filter(id => id.startsWith(courseKey + "_")).length;
+}
+
+function getCourseTotalTasks(courseKey) {
+  return ALL_COURSES[courseKey].modules.reduce((sum, m) => sum + m.tasks.length, 0);
+}
+
+function renderCourses() {
   const grid = document.getElementById("course-grid");
   grid.innerHTML = "";
 
-  Object.keys(COURSES).forEach(key => {
-    const course = COURSES[key];
-    const totalMods = course.modules.length;
-    const completedMods = Math.min(state.unlockedModules[key] || 0, totalMods);
+  Object.keys(ALL_COURSES).forEach(key => {
+    const c = ALL_COURSES[key];
+    const done = getCourseSolvedCount(key);
+    const total = getCourseTotalTasks(key);
 
     const card = document.createElement("button");
     card.className = "course-card";
     card.innerHTML = `
-      <div class="course-icon" style="background:${course.bg}; color:${course.color};">${course.badge}</div>
-      <h3>${course.title}</h3>
-      <p>${course.desc}</p>
-      <div class="course-status">${completedMods}/${totalMods} Modules Unlocked</div>
+      <div class="course-icon" style="background:${c.bg}; color:${c.color};">${c.badge}</div>
+      <h3>${c.title}</h3>
+      <p>${c.desc}</p>
+      <div class="course-status">${done}/${total} Tasks Done</div>
     `;
     card.onclick = () => openRoadmap(key);
     grid.appendChild(card);
   });
-
-  showScreen(homeScreen);
 }
 
 function openRoadmap(courseKey) {
-  currentCourseKey = courseKey;
-  const course = COURSES[courseKey];
-  const unlockedIdx = state.unlockedModules[courseKey] || 0;
-
-  document.getElementById("roadmap-title").textContent = `${course.title} Full Curriculum`;
+  activeCourseKey = courseKey;
+  const course = ALL_COURSES[courseKey];
+  document.getElementById("roadmap-title").textContent = `${course.title} Path (${getCourseTotalTasks(courseKey)} Tasks)`;
   document.getElementById("roadmap-desc").textContent = course.desc;
 
   const list = document.getElementById("module-list");
   list.innerHTML = "";
 
-  course.modules.forEach((mod, idx) => {
-    const isLocked = idx > unlockedIdx;
-    const isDone = idx < unlockedIdx;
+  course.modules.forEach((mod, mIdx) => {
+    const solvedInMod = mod.tasks.filter((_, tIdx) =>
+      state.solvedIds.includes(`${courseKey}_${mIdx}_${tIdx}`)
+    ).length;
+
+    const prevSolved = mIdx === 0 || course.modules[mIdx - 1].tasks.every((_, tIdx) =>
+      state.solvedIds.includes(`${courseKey}_${mIdx - 1}_${tIdx}`)
+    );
 
     const item = document.createElement("button");
-    item.className = `module-item ${isLocked ? "locked" : ""}`;
+    item.className = `module-item ${!prevSolved ? "locked" : ""}`;
     item.innerHTML = `
       <div class="module-info">
-        <h4>${mod.title}</h4>
-        <p>${mod.summary}</p>
+        <h4>${mIdx + 1}. ${mod.title}</h4>
+        <p>${solvedInMod}/${mod.tasks.length} tasks completed</p>
       </div>
-      <span class="module-badge">${isLocked ? "🔒 Locked" : isDone ? "✅ Done" : "Start ▶"}</span>
+      <span class="module-badge">${!prevSolved ? "🔒 Locked" : solvedInMod === mod.tasks.length ? "✅ Done" : "Start ▶"}</span>
     `;
 
-    if (!isLocked) {
-      item.onclick = () => startModule(idx);
+    if (prevSolved) {
+      item.onclick = () => {
+        // Resume at first unsolved task in this module
+        const nextUnsolved = mod.tasks.findIndex((_, tIdx) =>
+          !state.solvedIds.includes(`${courseKey}_${mIdx}_${tIdx}`)
+        );
+        startTask(mIdx, nextUnsolved >= 0 ? nextUnsolved : 0);
+      };
     }
     list.appendChild(item);
   });
 
-  showScreen(roadmapScreen);
+  switchTab("roadmap-screen");
 }
 
-function startModule(modIdx) {
-  currentModuleIdx = modIdx;
-  stepIndex = 0;
-  renderStep();
-  showScreen(lessonScreen);
+function startTask(mIdx, tIdx) {
+  activeModuleIdx = mIdx;
+  activeTaskIdx = tIdx;
+  taskSolved = false;
+
+  const course = ALL_COURSES[activeCourseKey];
+  const mod = course.modules[mIdx];
+  const item = mod.tasks[tIdx];
+
+  document.getElementById("step-counter").textContent = `${tIdx + 1}/${mod.tasks.length}`;
+  document.getElementById("progress-fill").style.width = `${(tIdx / mod.tasks.length) * 100}%`;
+
+  // Populate Slide A (Themed Explanation)
+  document.getElementById("explain-tag").textContent = `${course.title} • M${mIdx + 1} Task ${tIdx + 1}`;
+  document.getElementById("explain-title").textContent = themeText(item.title);
+  document.getElementById("explain-body").textContent = themeText(item.explain);
+  document.getElementById("explain-analogy").textContent = "💡 " + themeText(item.analogy);
+  document.getElementById("explain-code").textContent = themeText(item.example);
+
+  // Populate Slide B (Challenge)
+  document.getElementById("task-tag").textContent = `CHALLENGE ${tIdx + 1} OF ${mod.tasks.length}`;
+  document.getElementById("task-title").textContent = themeText(item.title);
+  document.getElementById("task-prompt").textContent = themeText(item.prompt);
+  document.getElementById("task-clue").textContent = "Rule Clue: " + themeText(item.clue);
+  document.getElementById("task-clue").classList.add("hidden");
+
+  taskInput.value = "";
+  document.getElementById("feedback-msg").textContent = "";
+  document.getElementById("next-task-btn").classList.add("hidden");
+
+  // Show Slide A first
+  document.getElementById("explain-slide").classList.remove("hidden");
+  document.getElementById("task-slide").classList.add("hidden");
+  switchTab("lesson-screen");
 }
 
-function renderStep() {
-  stepSolved = false;
-  const course = COURSES[currentCourseKey];
-  const mod = course.modules[currentModuleIdx];
-  const cat = state.category || "sports";
-  const totalSteps = mod.lessons.length + 1;
-  const isTaskStep = stepIndex === mod.lessons.length;
+// Slide Transitions
+document.getElementById("start-task-btn").onclick = () => {
+  document.getElementById("explain-slide").classList.add("hidden");
+  document.getElementById("task-slide").classList.remove("hidden");
+  setTimeout(() => taskInput.focus(), 100);
+};
 
-  document.getElementById("lesson-lang-tag").textContent = `${course.title} • M${currentModuleIdx + 1}`;
-  document.getElementById("step-counter").textContent = `${stepIndex + 1}/${totalSteps}`;
-  document.getElementById("progress-fill").style.width = `${(stepIndex / totalSteps) * 100}%`;
+document.getElementById("peek-concept-btn").onclick = () => {
+  document.getElementById("task-slide").classList.add("hidden");
+  document.getElementById("explain-slide").classList.remove("hidden");
+};
 
-  const feedback = document.getElementById("feedback-msg");
-  feedback.textContent = "";
-  document.getElementById("next-btn").classList.add("hidden");
+document.getElementById("toggle-clue-btn").onclick = () => {
+  document.getElementById("task-clue").classList.toggle("hidden");
+};
 
-  const codeBox = document.getElementById("code-box");
-  const quizArea = document.getElementById("quiz-area");
-  const taskArea = document.getElementById("task-area");
+document.getElementById("run-task-btn").onclick = () => {
+  const course = ALL_COURSES[activeCourseKey];
+  const item = course.modules[activeModuleIdx].tasks[activeTaskIdx];
+  const fb = document.getElementById("feedback-msg");
+  const expected = themeText(item.match);
+  const regex = new RegExp(expected, "i");
 
-  if (!isTaskStep) {
-    const lesson = mod.lessons[stepIndex];
-    document.getElementById("stage-badge").textContent = "CONCEPT";
-    document.getElementById("lesson-title").textContent = lesson.title;
-    document.getElementById("lesson-explanation").textContent = lesson.explanation;
-    document.getElementById("lesson-analogy").textContent = "💡 " + lesson.analogy;
-
-    codeBox.classList.remove("hidden");
-    document.getElementById("lesson-code").textContent = lesson.examples[cat];
-
-    quizArea.classList.remove("hidden");
-    taskArea.classList.add("hidden");
-
-    document.getElementById("quiz-question").textContent = lesson.question;
-    const optionsContainer = document.getElementById("quiz-options");
-    optionsContainer.innerHTML = "";
-
-    lesson.options.forEach((opt, idx) => {
-      const btn = document.createElement("button");
-      btn.className = "option-btn";
-      btn.textContent = opt;
-      btn.onclick = () => {
-        if (stepSolved) return;
-        if (idx === lesson.answer) {
-          stepSolved = true;
-          btn.classList.add("correct");
-          feedback.style.color = "#15803D";
-          feedback.textContent = "✅ Correct! +10 XP";
-          state.xp += 10;
-          saveState();
-          document.getElementById("next-btn").classList.remove("hidden");
-        } else {
-          btn.classList.add("wrong");
-          feedback.style.color = "#B91C1C";
-          feedback.textContent = "❌ Not quite—re-read the explanation above!";
-        }
-      };
-      optionsContainer.appendChild(btn);
-    });
-  } else {
-    // Final Module Coding Challenge: Hide example code so learner builds from memory!
-    const task = mod.tasks[cat];
-    document.getElementById("stage-badge").textContent = `${cat.toUpperCase()} CHALLENGE`;
-    document.getElementById("lesson-title").textContent = `${CATEGORIES[cat].emoji} Write It From Scratch`;
-    document.getElementById("lesson-explanation").textContent = "No sample code shown here—apply the rules you learned in this module.";
-    document.getElementById("lesson-analogy").textContent = "🧠 Recall the syntax rules carefully before running your code.";
-
-    codeBox.classList.add("hidden");
-    quizArea.classList.add("hidden");
-    taskArea.classList.remove("hidden");
-
-    taskInput.value = "";
-    taskHint.textContent = "Rule Clue: " + task.clue;
-    taskHint.classList.add("hidden");
-    document.getElementById("task-prompt").textContent = task.prompt;
-
-    document.getElementById("toggle-clue-btn").onclick = () => {
-      taskHint.classList.toggle("hidden");
-    };
-
-    document.getElementById("run-task-btn").onclick = () => {
-      if (stepSolved) return;
-      const userCode = taskInput.value.trim();
-      if (task.validate(userCode)) {
-        stepSolved = true;
-        feedback.style.color = "#15803D";
-        feedback.textContent = "🎉 Spot on! Module unlocked +30 XP";
-        state.xp += 30;
-        saveState();
-        document.getElementById("next-btn").classList.remove("hidden");
-      } else {
-        feedback.style.color = "#B91C1C";
-        feedback.textContent = "❌ Syntax or logic mismatch—check brackets, quotes, or semicolons.";
-      }
-    };
-  }
-}
-
-document.getElementById("next-btn").onclick = () => {
-  const course = COURSES[currentCourseKey];
-  const mod = course.modules[currentModuleIdx];
-  const totalSteps = mod.lessons.length + 1;
-
-  if (stepIndex + 1 < totalSteps) {
-    stepIndex++;
-    renderStep();
-  } else {
-    if ((state.unlockedModules[currentCourseKey] || 0) <= currentModuleIdx) {
-      state.unlockedModules[currentCourseKey] = currentModuleIdx + 1;
+  if (regex.test(taskInput.value.trim())) {
+    const taskId = `${activeCourseKey}_${activeModuleIdx}_${activeTaskIdx}`;
+    if (!state.solvedIds.includes(taskId)) {
+      state.solvedIds.push(taskId);
+      state.xp += 15;
+      saveState(); // Immediately saves after every solved task
     }
-    saveState();
-    document.getElementById("progress-fill").style.width = "100%";
-    const cat = state.category || "sports";
-    document.getElementById("complete-emoji").textContent = CATEGORIES[cat].emoji;
-    document.getElementById("complete-title").textContent = `${mod.title} Cleared!`;
-    document.getElementById("complete-summary").textContent =
-      `You solved the ${cat} challenge from scratch. Total XP: ${state.xp}`;
-    showScreen(completeScreen);
+    taskSolved = true;
+    fb.style.color = "#15803D";
+    fb.textContent = "✅ Nailed it! Progress saved (+15 XP)";
+    document.getElementById("next-task-btn").classList.remove("hidden");
+  } else {
+    fb.style.color = "#B91C1C";
+    fb.textContent = "❌ Not quite right—check your syntax, brackets, or spelling.";
   }
 };
 
-document.getElementById("roadmap-back-btn").onclick = renderHome;
-document.getElementById("back-btn").onclick = () => openRoadmap(currentCourseKey);
-document.getElementById("home-return-btn").onclick = () => openRoadmap(currentCourseKey);
+document.getElementById("next-task-btn").onclick = () => {
+  const mod = ALL_COURSES[activeCourseKey].modules[activeModuleIdx];
+  if (activeTaskIdx + 1 < mod.tasks.length) {
+    startTask(activeModuleIdx, activeTaskIdx + 1);
+  } else {
+    openRoadmap(activeCourseKey);
+  }
+};
 
-// Boot
+document.getElementById("roadmap-back-btn").onclick = () => {
+  renderCourses();
+  switchTab("home-screen");
+};
+
+document.getElementById("lesson-back-btn").onclick = () => openRoadmap(activeCourseKey);
+
+function updateProgressScreen() {
+  const statsGrid = document.getElementById("stats-grid");
+  if (!statsGrid) return;
+  statsGrid.innerHTML = "";
+
+  Object.keys(ALL_COURSES).forEach(key => {
+    const c = ALL_COURSES[key];
+    const done = getCourseSolvedCount(key);
+    const total = getCourseTotalTasks(key);
+    const box = document.createElement("div");
+    box.className = "stat-box";
+    box.innerHTML = `<strong>${done}/${total}</strong><span>${c.title} Tasks</span>`;
+    statsGrid.appendChild(box);
+  });
+
+  document.getElementById("backup-code-box").value = btoa(JSON.stringify(state));
+}
+
+document.getElementById("copy-backup-btn").onclick = () => {
+  const box = document.getElementById("backup-code-box");
+  box.select();
+  document.execCommand("copy");
+  alert("Save code copied!");
+};
+
+document.getElementById("restore-backup-btn").onclick = () => {
+  const code = prompt("Paste your saved backup code:");
+  if (!code) return;
+  try {
+    const decoded = JSON.parse(atob(code.trim()));
+    if (decoded && Array.isArray(decoded.solvedIds)) {
+      state = decoded;
+      saveState();
+      applyTheme(state.category);
+      renderCourses();
+      alert("Progress restored successfully!");
+    }
+  } catch (e) {
+    alert("Invalid backup code.");
+  }
+};
+
+// Boot App
 saveState();
-if (state.category && CATEGORIES[state.category]) {
-  applyCategoryTheme(state.category);
-  renderHome();
+if (state.onboarded) {
+  applyTheme(state.category);
+  renderCourses();
+  showTopScreen("main-container");
+  switchTab("home-screen");
 } else {
-  showScreen(categoryScreen);
+  showTopScreen("welcome-screen");
 }
