@@ -1,9 +1,45 @@
 document.addEventListener("DOMContentLoaded", () => {
   const CATEGORIES = {
-    sports: { label: "⚽ Sports Theme", word: "Match", item: "Goal", num: 10 },
-    nature: { label: "🌿 Nature Theme", word: "Forest", item: "Tree", num: 25 },
-    food:   { label: "🍕 Food Theme",   word: "Menu",   item: "Pizza", num: 50 },
-    space:  { label: "🚀 Space Theme",  word: "Orbit",  item: "Rocket", num: 99 }
+    sports: {
+      icon: "⚽",
+      label: "Sports Arena",
+      word: "Match",
+      item: "Goal",
+      num: 10,
+      winEmoji: "🏆",
+      winTitle: "Goal Scored!",
+      winMsg: "Clean execution! Your match stats just leveled up."
+    },
+    nature: {
+      icon: "🌿",
+      label: "Forest Canopy",
+      word: "Forest",
+      item: "Tree",
+      num: 25,
+      winEmoji: "🦋",
+      winTitle: "Trail Blazed!",
+      winMsg: "Fresh and clean! Another path unlocked in the wild."
+    },
+    food: {
+      icon: "🍕",
+      label: "Street Cafe",
+      word: "Menu",
+      item: "Pizza",
+      num: 50,
+      winEmoji: "👨‍🍳",
+      winTitle: "Order Up!",
+      winMsg: "Cooked to perfection! Ready for the next recipe?"
+    },
+    space: {
+      icon: "🚀",
+      label: "Deep Cosmos",
+      word: "Orbit",
+      item: "Rocket",
+      num: 99,
+      winEmoji: "🪐",
+      winTitle: "Orbit Achieved!",
+      winMsg: "Telemetry confirmed! Mission stage complete."
+    }
   };
 
   const ALL_COURSES = {};
@@ -53,9 +89,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function applyTheme(catKey) {
     state.category = catKey;
+    const cat = CATEGORIES[catKey] || CATEGORIES.sports;
     document.body.setAttribute("data-theme", catKey);
+
     const labelEl = document.getElementById("active-theme-label");
-    if (labelEl) labelEl.textContent = CATEGORIES[catKey].label;
+    if (labelEl) labelEl.textContent = cat.label;
+
+    const iconEl = document.getElementById("brand-world-icon");
+    if (iconEl) iconEl.textContent = cat.icon;
+
     saveState();
   }
 
@@ -138,7 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/\{NUM\}/g, t.num);
   }
 
-  // Computes a visual or console output preview where applicable
   function renderExampleOutput(courseKey, codeStr) {
     const outBox = document.getElementById("output-box");
     const outRender = document.getElementById("output-render");
@@ -146,7 +187,6 @@ document.addEventListener("DOMContentLoaded", () => {
     outRender.innerHTML = "";
 
     if (courseKey === "html") {
-      // Skip external broken images/links from navigating away, render safe HTML preview
       if (/<img/i.test(codeStr)) {
         outBox.classList.add("hidden");
         return;
@@ -271,7 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function openRoadmap(courseKey) {
     activeCourseKey = courseKey;
     const course = ALL_COURSES[courseKey];
-    document.getElementById("roadmap-title").textContent = `${course.title} Path (${getCourseTotalTasks(courseKey)} Tasks)`;
+    document.getElementById("roadmap-title").textContent = `${course.title} Path`;
     document.getElementById("roadmap-desc").textContent = course.desc;
 
     const list = document.getElementById("module-list");
@@ -329,7 +369,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("explain-analogy").textContent = "💡 " + themeText(item.analogy);
     document.getElementById("explain-code").textContent = themedExample;
 
-    // Show or hide Output Preview depending on task
     renderExampleOutput(activeCourseKey, themedExample);
 
     document.getElementById("task-tag").textContent = `CHALLENGE ${tIdx + 1} OF ${mod.tasks.length}`;
@@ -340,16 +379,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     taskInput.value = "";
     document.getElementById("feedback-msg").textContent = "";
-    document.getElementById("next-task-btn").classList.add("hidden");
 
-    document.getElementById("explain-slide").classList.remove("hidden");
-    document.getElementById("task-slide").classList.add("hidden");
+    const explainSlide = document.getElementById("explain-slide");
+    const taskSlide = document.getElementById("task-slide");
+    explainSlide.classList.remove("hidden");
+    taskSlide.classList.add("hidden");
     switchTab("lesson-screen");
   }
 
   document.getElementById("start-task-btn").addEventListener("click", () => {
     document.getElementById("explain-slide").classList.add("hidden");
-    document.getElementById("task-slide").classList.remove("hidden");
+    const taskSlide = document.getElementById("task-slide");
+    taskSlide.classList.remove("hidden");
     setTimeout(() => taskInput.focus(), 100);
   });
 
@@ -362,6 +403,26 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("task-clue").classList.toggle("hidden");
   });
 
+  // Celebration Pop-up Logic
+  function openCelebrateModal(isNewSolve) {
+    const cat = CATEGORIES[state.category] || CATEGORIES.sports;
+    document.getElementById("modal-emoji").textContent = cat.winEmoji;
+    document.getElementById("modal-pill").textContent = isNewSolve ? "+15 XP EARNED" : "PRACTICE COMPLETE";
+    document.getElementById("modal-title").textContent = cat.winTitle;
+    document.getElementById("modal-desc").textContent = cat.winMsg;
+    document.getElementById("celebrate-modal").classList.remove("hidden");
+  }
+
+  document.getElementById("modal-next-btn").addEventListener("click", () => {
+    document.getElementById("celebrate-modal").classList.add("hidden");
+    const mod = ALL_COURSES[activeCourseKey].modules[activeModuleIdx];
+    if (activeTaskIdx + 1 < mod.tasks.length) {
+      startTask(activeModuleIdx, activeTaskIdx + 1);
+    } else {
+      openRoadmap(activeCourseKey);
+    }
+  });
+
   document.getElementById("run-task-btn").addEventListener("click", () => {
     const course = ALL_COURSES[activeCourseKey];
     const item = course.modules[activeModuleIdx].tasks[activeTaskIdx];
@@ -371,26 +432,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (regex.test(taskInput.value.trim())) {
       const taskId = `${activeCourseKey}_${activeModuleIdx}_${activeTaskIdx}`;
+      let isNewSolve = false;
       if (!state.solvedIds.includes(taskId)) {
         state.solvedIds.push(taskId);
         state.xp += 15;
+        isNewSolve = true;
         saveState();
       }
-      fb.style.color = "#15803D";
-      fb.textContent = "✅ Nailed it! Progress saved (+15 XP)";
-      document.getElementById("next-task-btn").classList.remove("hidden");
+      fb.textContent = "";
+      openCelebrateModal(isNewSolve);
     } else {
-      fb.style.color = "#B91C1C";
+      fb.style.color = "#DC2626";
       fb.textContent = "❌ Not quite right, check your syntax, brackets, or spelling.";
-    }
-  });
-
-  document.getElementById("next-task-btn").addEventListener("click", () => {
-    const mod = ALL_COURSES[activeCourseKey].modules[activeModuleIdx];
-    if (activeTaskIdx + 1 < mod.tasks.length) {
-      startTask(activeModuleIdx, activeTaskIdx + 1);
-    } else {
-      openRoadmap(activeCourseKey);
+      taskInput.classList.remove("shake-error");
+      void taskInput.offsetWidth;
+      taskInput.classList.add("shake-error");
     }
   });
 
