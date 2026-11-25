@@ -7,14 +7,21 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body data-theme="sports">
+  <!-- Dynamic Ambient Theme Layer (Shapes, Stars, Leaves, Turf Stripes) -->
+  <div class="theme-backdrop" aria-hidden="true">
+    <span class="ambient-orb orb-1"></span>
+    <span class="ambient-orb orb-2"></span>
+    <span class="ambient-orb orb-3"></span>
+  </div>
+
   <div class="app-shell">
 
     <!-- PAGE 1: Clean Onboarding Welcome Screen -->
     <section id="welcome-screen" class="screen active">
       <div class="welcome-hero">
         <div class="hero-logo">
-          <svg width="68" height="68" viewBox="0 0 36 36" fill="none">
-            <rect width="36" height="36" rx="10" fill="var(--accent)" />
+          <svg width="72" height="72" viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="11" fill="var(--accent)" />
             <path d="M13 12L7 18L13 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M23 12L29 18L23 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             <circle cx="18" cy="18" r="2.5" fill="#FFFFFF"/>
@@ -30,46 +37,41 @@
     <section id="category-screen" class="screen">
       <div class="page-header">
         <h2>Choose Your World</h2>
-        <p>Every lesson, analogy, and coding challenge adapts to your favorite topic.</p>
+        <p>Pick a world to transform the entire app's style, colors, and coding challenges.</p>
       </div>
 
       <div class="category-grid">
-        <button type="button" class="cat-card" data-cat="sports">
+        <button type="button" class="cat-card preview-sports" data-cat="sports">
           <span class="cat-emoji">⚽</span>
           <h3>Sports</h3>
-          <p>Match scores, timers &amp; player stats</p>
+          <p>Stadium energy, match scores &amp; player stats</p>
         </button>
-        <button type="button" class="cat-card" data-cat="nature">
+        <button type="button" class="cat-card preview-nature" data-cat="nature">
           <span class="cat-emoji">🌿</span>
           <h3>Nature</h3>
-          <p>Wildlife, rivers &amp; forest trails</p>
+          <p>Forest trails, wildlife &amp; fresh botanical vibes</p>
         </button>
-        <button type="button" class="cat-card" data-cat="food">
+        <button type="button" class="cat-card preview-food" data-cat="food">
           <span class="cat-emoji">🍕</span>
           <h3>Food</h3>
-          <p>Recipes, cafe menus &amp; orders</p>
+          <p>Warm cafe menu, recipes &amp; kitchen orders</p>
         </button>
-        <button type="button" class="cat-card" data-cat="space">
+        <button type="button" class="cat-card preview-space" data-cat="space">
           <span class="cat-emoji">🚀</span>
           <h3>Space</h3>
-          <p>Rockets, orbits &amp; mission logs</p>
+          <p>Cosmic nebula, rockets &amp; orbital missions</p>
         </button>
       </div>
     </section>
 
-    <!-- MAIN APP SHELL (With Bottom Navigation Bar) -->
+    <!-- MAIN APP SHELL -->
     <div id="main-container" class="main-container hidden">
       <header class="topbar">
         <div class="brand">
-          <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-            <rect width="36" height="36" rx="9" fill="var(--accent)" />
-            <path d="M13 12L7 18L13 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M23 12L29 18L23 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="18" cy="18" r="2.5" fill="#FFFFFF"/>
-          </svg>
+          <div class="brand-badge" id="brand-world-icon">⚽</div>
           <div>
             <h1>CodeStep</h1>
-            <span class="theme-chip" id="active-theme-label">⚽ Sports Theme</span>
+            <span class="theme-chip" id="active-theme-label">Sports Arena</span>
           </div>
         </div>
         <div class="streak-pill" id="xp-display">⭐ 0 XP</div>
@@ -79,7 +81,6 @@
       <main id="home-screen" class="tab-view active">
         <div class="section-intro">
           <h2>Learning Paths</h2>
-          <p>40+ interactive tasks per language. Progress saves automatically.</p>
         </div>
         <div class="course-grid" id="course-grid"></div>
       </main>
@@ -104,8 +105,8 @@
           <span id="step-counter" class="step-text">1/4</span>
         </div>
 
-        <!-- SLIDE A: Short Themed Explanation + Optional Live Output -->
-        <div id="explain-slide" class="card slide-card">
+        <!-- SLIDE A: Short Themed Explanation -->
+        <div id="explain-slide" class="card slide-card slide-enter">
           <div class="card-meta">
             <span class="tag-pill" id="explain-tag">HTML • Task 1</span>
             <span class="stage-badge">STEP 1: LEARN</span>
@@ -118,7 +119,6 @@
             <pre><code id="explain-code"></code></pre>
           </div>
 
-          <!-- Optional Output Box (Automatically shown when applicable) -->
           <div id="output-box" class="output-box hidden">
             <div class="output-label">▶ Output Preview</div>
             <div id="output-render" class="output-render"></div>
@@ -128,7 +128,7 @@
         </div>
 
         <!-- SLIDE B: Coding Challenge -->
-        <div id="task-slide" class="card slide-card hidden">
+        <div id="task-slide" class="card slide-card slide-enter hidden">
           <div class="card-meta">
             <span class="tag-pill" id="task-tag">CHALLENGE</span>
             <button type="button" id="peek-concept-btn" class="btn-ghost">📖 Re-read Lesson</button>
@@ -142,7 +142,6 @@
           <textarea id="task-input" class="code-input" rows="4" spellcheck="false" autocomplete="off" placeholder="Type your code here..."></textarea>
           <button type="button" id="run-task-btn" class="btn-secondary">Check My Code ▶</button>
           <p id="feedback-msg" class="feedback-msg"></p>
-          <button type="button" id="next-task-btn" class="btn-primary hidden">Next Task →</button>
         </div>
       </main>
 
@@ -150,7 +149,6 @@
       <main id="progress-screen" class="tab-view">
         <div class="section-intro">
           <h2>Your Progress</h2>
-          <p>Saved automatically on your device.</p>
         </div>
 
         <div class="stats-grid" id="stats-grid"></div>
@@ -167,7 +165,7 @@
           <textarea id="backup-code-box" class="code-input" rows="2" readonly style="margin-top:8px; font-size:11px;"></textarea>
           <div style="display:flex; gap:8px;">
             <button type="button" id="copy-backup-btn" class="btn-secondary">Copy Code</button>
-            <button type="button" id="restore-backup-btn" class="btn-ghost" style="border:1px solid #CBD5E1; border-radius:10px; padding:0 12px;">Restore</button>
+            <button type="button" id="restore-backup-btn" class="btn-ghost" style="border:1.5px solid var(--border-color); border-radius:12px; padding:0 14px;">Restore</button>
           </div>
         </div>
       </main>
@@ -184,11 +182,10 @@
           <ul class="about-list">
             <li><strong>Story-Driven Learning:</strong> Concepts adapt to Sports, Nature, Food, or Space.</li>
             <li><strong>Active Recall:</strong> Copy-paste is disabled so you build real muscle memory.</li>
-            <li><strong>Step-by-Step Mastery:</strong> 40+ structured tasks per language from zero to real code.</li>
+            <li><strong>Step-by-Step Mastery:</strong> Structured modules from zero to writing real code.</li>
           </ul>
         </div>
 
-        <!-- Discreet Corner Credit -->
         <div class="corner-credit">
           <span>By Sayeed Akhter</span>
           <span>•</span>
@@ -212,6 +209,18 @@
         </button>
       </nav>
     </div>
+
+    <!-- THEMED CELEBRATION POP-UP MODAL -->
+    <div id="celebrate-modal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-emoji" id="modal-emoji">🏆</div>
+        <div class="modal-pill" id="modal-pill">+15 XP EARNED</div>
+        <h3 id="modal-title">Goal Scored!</h3>
+        <p id="modal-desc">Clean syntax! Ready for the next play?</p>
+        <button type="button" id="modal-next-btn" class="btn-primary">Continue →</button>
+      </div>
+    </div>
+
   </div>
 
   <script src="data-html.js"></script>
