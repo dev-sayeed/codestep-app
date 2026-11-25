@@ -1,41 +1,33 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const CATEGORIES = {
-    sports: {
-      icon: "⚽",
-      label: "Sports Arena",
-      word: "Match",
-      item: "Goal",
-      num: 10,
-      winEmoji: "🏆",
-      winTitle: "Goal Scored!"
-    },
-    nature: {
-      icon: "🌿",
-      label: "Forest Canopy",
-      word: "Forest",
-      item: "Tree",
-      num: 25,
-      winEmoji: "🦋",
-      winTitle: "Trail Blazed!"
-    },
-    food: {
-      icon: "🍕",
-      label: "Street Cafe",
-      word: "Menu",
-      item: "Pizza",
-      num: 50,
-      winEmoji: "👨‍🍳",
-      winTitle: "Order Up!"
-    },
-    space: {
-      icon: "🚀",
-      label: "Deep Cosmos",
-      word: "Orbit",
-      item: "Rocket",
-      num: 99,
-      winEmoji: "🪐",
-      winTitle: "Orbit Achieved!"
+  // 1. PRIORITY NAVIGATION (Wired first so Get Started always works)
+  const welcomeScreen = document.getElementById("welcome-screen");
+  const categoryScreen = document.getElementById("category-screen");
+  const mainContainer = document.getElementById("main-container");
+
+  function showTopScreen(id) {
+    if (welcomeScreen) welcomeScreen.classList.remove("active");
+    if (categoryScreen) categoryScreen.classList.remove("active");
+    if (mainContainer) mainContainer.classList.add("hidden");
+
+    if (id === "main-container" && mainContainer) {
+      mainContainer.classList.remove("hidden");
+    } else {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("active");
     }
+  }
+
+  const getStartedBtn = document.getElementById("get-started-btn");
+  if (getStartedBtn) {
+    getStartedBtn.onclick = () => showTopScreen("category-screen");
+  }
+
+  // 2. THEME & STATE SETUP
+  const CATEGORIES = {
+    sports: { icon: "⚽", label: "Sports Arena", word: "Match", item: "Goal", num: 10, winEmoji: "🏆", winTitle: "Goal Scored!" },
+    nature: { icon: "🌿", label: "Forest Canopy", word: "Forest", item: "Tree", num: 25, winEmoji: "🦋", winTitle: "Trail Blazed!" },
+    food:   { icon: "🍕", label: "Street Cafe", word: "Menu", item: "Pizza", num: 50, winEmoji: "👨‍🍳", winTitle: "Order Up!" },
+    space:  { icon: "🚀", label: "Deep Cosmos", word: "Orbit", item: "Rocket", num: 99, winEmoji: "🪐", winTitle: "Orbit Achieved!" }
   };
 
   const ALL_COURSES = {};
@@ -99,18 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
     saveState();
   }
 
-  function showTopScreen(id) {
-    document.getElementById("welcome-screen").classList.remove("active");
-    document.getElementById("category-screen").classList.remove("active");
-    document.getElementById("main-container").classList.add("hidden");
-
-    if (id === "main-container") {
-      document.getElementById("main-container").classList.remove("hidden");
-    } else {
-      document.getElementById(id).classList.add("active");
-    }
-  }
-
   function switchTab(tabId) {
     document.querySelectorAll(".tab-view").forEach(v => v.classList.remove("active"));
     const target = document.getElementById(tabId);
@@ -122,34 +102,27 @@ document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo(0, 0);
   }
 
-  const getStartedBtn = document.getElementById("get-started-btn");
-  if (getStartedBtn) {
-    getStartedBtn.addEventListener("click", () => {
-      showTopScreen("category-screen");
-    });
-  }
-
   document.querySelectorAll(".cat-card").forEach(btn => {
-    btn.addEventListener("click", () => {
+    btn.onclick = () => {
       state.onboarded = true;
       applyTheme(btn.dataset.cat);
       renderCourses();
       showTopScreen("main-container");
       switchTab("home-screen");
-    });
+    };
   });
 
   const switchThemeBtn = document.getElementById("switch-theme-btn");
   if (switchThemeBtn) {
-    switchThemeBtn.addEventListener("click", () => showTopScreen("category-screen"));
+    switchThemeBtn.onclick = () => showTopScreen("category-screen");
   }
 
   document.querySelectorAll(".nav-tab").forEach(btn => {
-    btn.addEventListener("click", () => {
+    btn.onclick = () => {
       if (btn.dataset.tab === "home-screen") renderCourses();
       if (btn.dataset.tab === "progress-screen") updateProgressScreen();
       switchTab(btn.dataset.tab);
-    });
+    };
   });
 
   const exampleBox = document.getElementById("example-box");
@@ -180,8 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getConceptDefinition(courseKey, slideObj) {
     if (slideObj.concept) return themeText(slideObj.concept);
-
     const text = ((slideObj.title || "") + " " + (slideObj.explain || "") + " " + (slideObj.example || "")).toLowerCase();
+
     if (courseKey === "html") {
       if (text.includes("href") || text.includes("src") || text.includes("alt") || text.includes("placeholder") || text.includes("attribute") || text.includes("class=") || text.includes("id=")) {
         return "What is an Attribute? Extra settings placed inside an opening HTML tag (like href=\"...\" or src=\"...\") that tell the browser how the tag should behave.";
@@ -233,6 +206,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderExampleOutput(courseKey, codeStr) {
     const outBox = document.getElementById("output-box");
     const outRender = document.getElementById("output-render");
+    if (!outBox || !outRender) return;
+
     outRender.className = "output-render";
     outRender.innerHTML = "";
 
@@ -306,7 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (courseKey === "c") {
       const t = CATEGORIES[state.category] || CATEGORIES.sports;
-      const printfStr = codeStr.match(/printf\s*\(\s*"([^"\%\\]+)(?:\\n)?"\s*\)/);
+      const printfStr = codeStr.match(/printf\s*\(\s*"([^"%\\]+)(?:\\n)?"\s*\)/);
       if (printfStr) {
         outRender.classList.add("console-out");
         outRender.textContent = printfStr[1];
@@ -358,7 +333,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <p>${c.desc}</p>
         <div class="course-status">${done}/${total} Tasks Done</div>
       `;
-      card.addEventListener("click", () => openRoadmap(key));
+      card.onclick = () => openRoadmap(key);
       grid.appendChild(card);
     });
   }
@@ -401,12 +376,12 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
 
       if (isAccessible) {
-        item.addEventListener("click", () => {
+        item.onclick = () => {
           const nextUnsolved = mod.tasks.findIndex((_, tIdx) =>
             !state.solvedIds.includes(`${courseKey}_${mIdx}_${tIdx}`)
           );
           startTask(mIdx, nextUnsolved >= 0 ? nextUnsolved : 0);
-        });
+        };
       }
       list.appendChild(item);
     });
@@ -430,13 +405,12 @@ document.addEventListener("DOMContentLoaded", () => {
       pill.textContent = isSolved ? `✓ ${idx + 1}` : `${idx + 1}`;
 
       if (canOpen) {
-        pill.addEventListener("click", () => startTask(activeModuleIdx, idx));
+        pill.onclick = () => startTask(activeModuleIdx, idx);
       }
       jumper.appendChild(pill);
     });
   }
 
-  // Returns an array of 1 or more explanation slides for the current task
   function getTaskSlides(item) {
     if (Array.isArray(item.slides) && item.slides.length > 0) {
       return item.slides;
@@ -470,51 +444,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const conceptNote = getConceptDefinition(activeCourseKey, slide);
     const calloutEl = document.getElementById("concept-callout");
-    if (conceptNote) {
-      calloutEl.textContent = "📘 " + conceptNote;
-      calloutEl.classList.remove("hidden");
-    } else {
-      calloutEl.classList.add("hidden");
+    if (calloutEl) {
+      if (conceptNote) {
+        calloutEl.textContent = "📘 " + conceptNote;
+        calloutEl.classList.remove("hidden");
+      } else {
+        calloutEl.classList.add("hidden");
+      }
     }
 
     document.getElementById("explain-body").textContent = themeText(slide.explain || "");
 
     const analogyEl = document.getElementById("explain-analogy");
-    if (slide.analogy) {
-      analogyEl.textContent = "💡 " + themeText(slide.analogy);
-      analogyEl.classList.remove("hidden");
-    } else {
-      analogyEl.classList.add("hidden");
+    if (analogyEl) {
+      if (slide.analogy) {
+        analogyEl.textContent = "💡 " + themeText(slide.analogy);
+        analogyEl.classList.remove("hidden");
+      } else {
+        analogyEl.classList.add("hidden");
+      }
     }
 
     const exBox = document.getElementById("example-box");
     const exLabel = document.getElementById("example-box-label");
-    if (themedExample) {
-      exBox.classList.remove("hidden");
-      if (exLabel) {
-        exLabel.textContent = activeCourseKey === "conversions"
-          ? "🔒 Step-by-Step Worked Example"
-          : "🔒 Example (copy disabled)";
+    if (exBox) {
+      if (themedExample) {
+        exBox.classList.remove("hidden");
+        if (exLabel) {
+          exLabel.textContent = activeCourseKey === "conversions"
+            ? "🔒 Step-by-Step Worked Example"
+            : "🔒 Example (copy disabled)";
+        }
+        document.getElementById("explain-code").textContent = themedExample;
+      } else {
+        exBox.classList.add("hidden");
       }
-      document.getElementById("explain-code").textContent = themedExample;
-    } else {
-      exBox.classList.add("hidden");
     }
 
     renderExampleOutput(activeCourseKey, themedExample);
 
     const nextSlideBtn = document.getElementById("start-task-btn");
-    if (activeSlideIdx + 1 < slides.length) {
-      nextSlideBtn.textContent = `Next Explanation Slide (${activeSlideIdx + 2}/${slides.length}) →`;
-    } else {
-      nextSlideBtn.textContent = "Got It, Try Challenge →";
+    if (nextSlideBtn) {
+      nextSlideBtn.textContent = activeSlideIdx + 1 < slides.length
+        ? `Next Explanation Slide (${activeSlideIdx + 2}/${slides.length}) →`
+        : "Got It, Try Challenge →";
     }
 
-    // Re-trigger gentle slide pop animation
     const explainSlide = document.getElementById("explain-slide");
-    explainSlide.classList.remove("slide-enter");
-    void explainSlide.offsetWidth;
-    explainSlide.classList.add("slide-enter");
+    if (explainSlide) {
+      explainSlide.classList.remove("slide-enter");
+      void explainSlide.offsetWidth;
+      explainSlide.classList.add("slide-enter");
+    }
     window.scrollTo(0, 0);
   }
 
@@ -537,34 +518,185 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("task-tag").textContent = `CHALLENGE ${tIdx + 1} OF ${mod.tasks.length}`;
     document.getElementById("task-title").textContent = themeText(item.title);
     document.getElementById("task-prompt").textContent = themeText(item.prompt);
-    document.getElementById("task-clue").textContent = "Rule Clue: " + themeText(item.clue);
-    document.getElementById("task-clue").classList.add("hidden");
 
-    taskInput.value = "";
-    document.getElementById("feedback-msg").textContent = "";
+    const clueEl = document.getElementById("task-clue");
+    if (clueEl) {
+      clueEl.textContent = "Rule Clue: " + themeText(item.clue);
+      clueEl.classList.add("hidden");
+    }
+
+    if (taskInput) taskInput.value = "";
+    const fb = document.getElementById("feedback-msg");
+    if (fb) fb.textContent = "";
 
     document.getElementById("explain-slide").classList.remove("hidden");
     document.getElementById("task-slide").classList.add("hidden");
     switchTab("lesson-screen");
   }
 
-  document.getElementById("start-task-btn").addEventListener("click", () => {
-    const course = ALL_COURSES[activeCourseKey];
-    const item = course.modules[activeModuleIdx].tasks[activeTaskIdx];
-    const slides = getTaskSlides(item);
+  const startTaskBtn = document.getElementById("start-task-btn");
+  if (startTaskBtn) {
+    startTaskBtn.onclick = () => {
+      const course = ALL_COURSES[activeCourseKey];
+      const item = course.modules[activeModuleIdx].tasks[activeTaskIdx];
+      const slides = getTaskSlides(item);
 
-    if (activeSlideIdx + 1 < slides.length) {
-      activeSlideIdx++;
+      if (activeSlideIdx + 1 < slides.length) {
+        activeSlideIdx++;
+        renderExplainSlide();
+      } else {
+        document.getElementById("explain-slide").classList.add("hidden");
+        document.getElementById("task-slide").classList.remove("hidden");
+        if (taskInput) setTimeout(() => taskInput.focus(), 100);
+      }
+    };
+  }
+
+  const peekBtn = document.getElementById("peek-concept-btn");
+  if (peekBtn) {
+    peekBtn.onclick = () => {
+      activeSlideIdx = 0;
       renderExplainSlide();
-    } else {
-      document.getElementById("explain-slide").classList.add("hidden");
-      const taskSlide = document.getElementById("task-slide");
-      taskSlide.classList.remove("hidden");
-      setTimeout(() => taskInput.focus(), 100);
-    }
-  });
+      document.getElementById("task-slide").classList.add("hidden");
+      document.getElementById("explain-slide").classList.remove("hidden");
+    };
+  }
 
-  document.getElementById("peek-concept-btn").addEventListener("click", () => {
-    activeSlideIdx = 0;
-    renderExplainSlide();
-    document.getElementById
+  const toggleClueBtn = document.getElementById("toggle-clue-btn");
+  if (toggleClueBtn) {
+    toggleClueBtn.onclick = () => {
+      const clueEl = document.getElementById("task-clue");
+      if (clueEl) clueEl.classList.toggle("hidden");
+    };
+  }
+
+  function openCelebrateModal(isNewSolve) {
+    const cat = CATEGORIES[state.category] || CATEGORIES.sports;
+    document.getElementById("modal-emoji").textContent = cat.winEmoji;
+    document.getElementById("modal-pill").textContent = isNewSolve ? "+15 XP EARNED" : "COMPLETED";
+    document.getElementById("modal-title").textContent = cat.winTitle;
+    document.getElementById("celebrate-modal").classList.remove("hidden");
+  }
+
+  const modalNextBtn = document.getElementById("modal-next-btn");
+  if (modalNextBtn) {
+    modalNextBtn.onclick = () => {
+      document.getElementById("celebrate-modal").classList.add("hidden");
+      const mod = ALL_COURSES[activeCourseKey].modules[activeModuleIdx];
+      if (activeTaskIdx + 1 < mod.tasks.length) {
+        startTask(activeModuleIdx, activeTaskIdx + 1);
+      } else {
+        openRoadmap(activeCourseKey);
+      }
+    };
+  }
+
+  const runTaskBtn = document.getElementById("run-task-btn");
+  if (runTaskBtn) {
+    runTaskBtn.onclick = () => {
+      const course = ALL_COURSES[activeCourseKey];
+      const item = course.modules[activeModuleIdx].tasks[activeTaskIdx];
+      const fb = document.getElementById("feedback-msg");
+      const expected = themeText(item.match);
+      const regex = new RegExp(expected, "i");
+
+      if (regex.test((taskInput ? taskInput.value : "").trim())) {
+        const taskId = `${activeCourseKey}_${activeModuleIdx}_${activeTaskIdx}`;
+        let isNewSolve = false;
+        if (!state.solvedIds.includes(taskId)) {
+          state.solvedIds.push(taskId);
+          state.xp += 15;
+          isNewSolve = true;
+          saveState();
+        }
+        if (fb) fb.textContent = "";
+        openCelebrateModal(isNewSolve);
+      } else {
+        if (fb) {
+          fb.style.color = "#DC2626";
+          fb.textContent = "❌ Not quite right, check the worked example and try again.";
+        }
+        if (taskInput) {
+          taskInput.classList.remove("shake-error");
+          void taskInput.offsetWidth;
+          taskInput.classList.add("shake-error");
+        }
+      }
+    };
+  }
+
+  const roadmapBackBtn = document.getElementById("roadmap-back-btn");
+  if (roadmapBackBtn) {
+    roadmapBackBtn.onclick = () => {
+      renderCourses();
+      switchTab("home-screen");
+    };
+  }
+
+  const lessonBackBtn = document.getElementById("lesson-back-btn");
+  if (lessonBackBtn) {
+    lessonBackBtn.onclick = () => openRoadmap(activeCourseKey);
+  }
+
+  function updateProgressScreen() {
+    const statsGrid = document.getElementById("stats-grid");
+    if (!statsGrid) return;
+    statsGrid.innerHTML = "";
+
+    Object.keys(ALL_COURSES).forEach(key => {
+      const c = ALL_COURSES[key];
+      const done = getCourseSolvedCount(key);
+      const total = getCourseTotalTasks(key);
+      const box = document.createElement("div");
+      box.className = "stat-box";
+      box.innerHTML = `<strong>${done}/${total}</strong><span>${c.title}</span>`;
+      statsGrid.appendChild(box);
+    });
+
+    const backupBox = document.getElementById("backup-code-box");
+    if (backupBox) backupBox.value = btoa(JSON.stringify(state));
+  }
+
+  const copyBackupBtn = document.getElementById("copy-backup-btn");
+  if (copyBackupBtn) {
+    copyBackupBtn.onclick = () => {
+      const box = document.getElementById("backup-code-box");
+      if (box) {
+        box.select();
+        document.execCommand("copy");
+        alert("Save code copied!");
+      }
+    };
+  }
+
+  const restoreBackupBtn = document.getElementById("restore-backup-btn");
+  if (restoreBackupBtn) {
+    restoreBackupBtn.onclick = () => {
+      const code = prompt("Paste your saved backup code:");
+      if (!code) return;
+      try {
+        const decoded = JSON.parse(atob(code.trim()));
+        if (decoded && Array.isArray(decoded.solvedIds)) {
+          state = decoded;
+          saveState();
+          applyTheme(state.category);
+          renderCourses();
+          alert("Progress restored successfully!");
+        }
+      } catch (e) {
+        alert("Invalid backup code.");
+      }
+    };
+  }
+
+  // Boot App
+  saveState();
+  if (state.onboarded) {
+    applyTheme(state.category);
+    renderCourses();
+    showTopScreen("main-container");
+    switchTab("home-screen");
+  } else {
+    showTopScreen("welcome-screen");
+  }
+});
