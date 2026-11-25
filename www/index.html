@@ -104,7 +104,7 @@
           <span id="step-counter" class="step-text">1/4</span>
         </div>
 
-        <!-- SLIDE A: Short Themed Explanation -->
+        <!-- SLIDE A: Short Themed Explanation + Optional Live Output -->
         <div id="explain-slide" class="card slide-card">
           <div class="card-meta">
             <span class="tag-pill" id="explain-tag">HTML • Task 1</span>
@@ -117,6 +117,13 @@
             <div class="no-copy-hint">🔒 Example pattern (copy disabled)</div>
             <pre><code id="explain-code"></code></pre>
           </div>
+
+          <!-- Optional Output Box (Automatically shown when applicable) -->
+          <div id="output-box" class="output-box hidden">
+            <div class="output-label">▶ Output Preview</div>
+            <div id="output-render" class="output-render"></div>
+          </div>
+
           <button type="button" id="start-task-btn" class="btn-primary">Got It, Try Challenge →</button>
         </div>
 
@@ -143,7 +150,7 @@
       <main id="progress-screen" class="tab-view">
         <div class="section-intro">
           <h2>Your Progress</h2>
-          <p>Saved offline automatically on your device.</p>
+          <p>Saved automatically on your device.</p>
         </div>
 
         <div class="stats-grid" id="stats-grid"></div>
@@ -169,7 +176,7 @@
       <main id="about-screen" class="tab-view">
         <div class="section-intro">
           <h2>About CodeStep</h2>
-          <p>Built to make coding fun, visual, and accessible for absolute beginners.</p>
+          <p>Built to make coding fun, visual, and accessible for beginners.</p>
         </div>
 
         <div class="card">
@@ -177,17 +184,15 @@
           <ul class="about-list">
             <li><strong>Story-Driven Learning:</strong> Concepts adapt to Sports, Nature, Food, or Space.</li>
             <li><strong>Active Recall:</strong> Copy-paste is disabled so you build real muscle memory.</li>
-            <li><strong>100% Offline:</strong> Zero internet required after installation.</li>
+            <li><strong>Step-by-Step Mastery:</strong> 40+ structured tasks per language from zero to real code.</li>
           </ul>
         </div>
 
-        <div class="card creator-card">
-          <div class="creator-badge">CREATOR</div>
-          <h3>Sayeed Akhter</h3>
-          <p class="small-muted">Computer Science Educator &amp; Software Developer</p>
-          <a href="https://www.linkedin.com/in/sayeed-akhter" target="_blank" rel="noopener" class="linkedin-btn">
-            Connect on LinkedIn ↗
-          </a>
+        <!-- Discreet Corner Credit -->
+        <div class="corner-credit">
+          <span>By Sayeed Akhter</span>
+          <span>•</span>
+          <a href="https://www.linkedin.com/in/sayeed-akhter" target="_blank" rel="noopener">LinkedIn ↗</a>
         </div>
       </main>
 
