@@ -72,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let activeCourseKey = null;
   let activeModuleIdx = 0;
   let activeTaskIdx = 0;
+  let activeSlideIdx = 0;
 
   function saveState() {
     try {
@@ -177,11 +178,10 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/\{NUM\}/g, t.num);
   }
 
-  // Builds a plain-English beginner concept note so terms are always explained
-  function getConceptDefinition(courseKey, item) {
-    if (item.concept) return themeText(item.concept);
+  function getConceptDefinition(courseKey, slideObj) {
+    if (slideObj.concept) return themeText(slideObj.concept);
 
-    const text = (item.title + " " + item.explain + " " + item.example).toLowerCase();
+    const text = ((slideObj.title || "") + " " + (slideObj.explain || "") + " " + (slideObj.example || "")).toLowerCase();
     if (courseKey === "html") {
       if (text.includes("href") || text.includes("src") || text.includes("alt") || text.includes("placeholder") || text.includes("attribute") || text.includes("class=") || text.includes("id=")) {
         return "What is an Attribute? Extra settings placed inside an opening HTML tag (like href=\"...\" or src=\"...\") that tell the browser how the tag should behave.";
@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
     outRender.className = "output-render";
     outRender.innerHTML = "";
 
-    if (courseKey === "conversions") {
+    if (courseKey === "conversions" || !codeStr) {
       outBox.classList.add("hidden");
       return;
     }
@@ -306,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (courseKey === "c") {
       const t = CATEGORIES[state.category] || CATEGORIES.sports;
-      const printfStr = codeStr.match(/printf\s*\(\s*"([^"%\\]+)(?:\\n)?"\s*\)/);
+      const printfStr = codeStr.match(/printf\s*\(\s*"([^"\%\\]+)(?:\\n)?"\s*\)/);
       if (printfStr) {
         outRender.classList.add("console-out");
         outRender.textContent = printfStr[1];
@@ -377,7 +377,6 @@ document.addEventListener("DOMContentLoaded", () => {
         state.solvedIds.includes(`${courseKey}_${mIdx}_${tIdx}`)
       ).length;
 
-      // For Number Conversions, all 3 conversion parts are unlocked immediately so user can pick whichever conversion they need!
       const isAccessible = course.noTheme || mIdx === 0 || course.modules[mIdx - 1].tasks.every((_, tIdx) =>
         state.solvedIds.includes(`${courseKey}_${mIdx - 1}_${tIdx}`)
       );
@@ -415,7 +414,6 @@ document.addEventListener("DOMContentLoaded", () => {
     switchTab("roadmap-screen");
   }
 
-  // Renders clickable pills at top of lesson so any solved/unlocked task can be reviewed anytime
   function renderTaskJumper(mod) {
     const jumper = document.getElementById("task-jumper");
     if (!jumper) return;
@@ -438,25 +436,39 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function startTask(mIdx, tIdx) {
-    activeModuleIdx = mIdx;
-    activeTaskIdx = tIdx;
+  // Returns an array of 1 or more explanation slides for the current task
+  function getTaskSlides(item) {
+    if (Array.isArray(item.slides) && item.slides.length > 0) {
+      return item.slides;
+    }
+    return [{
+      title: item.title,
+      concept: item.concept,
+      explain: item.explain,
+      analogy: item.analogy,
+      example: item.example
+    }];
+  }
 
+  function renderExplainSlide() {
     const course = ALL_COURSES[activeCourseKey];
-    const mod = course.modules[mIdx];
-    const item = mod.tasks[tIdx];
-    const themedExample = themeText(item.example);
+    const mod = course.modules[activeModuleIdx];
+    const item = mod.tasks[activeTaskIdx];
+    const slides = getTaskSlides(item);
+    const slide = slides[activeSlideIdx];
+    const themedExample = themeText(slide.example || "");
 
-    renderTaskJumper(mod);
+    const stageEl = document.querySelector("#explain-slide .stage-badge");
+    if (stageEl) {
+      stageEl.textContent = slides.length > 1
+        ? `SLIDE ${activeSlideIdx + 1} OF ${slides.length}`
+        : "STEP 1: LEARN";
+    }
 
-    document.getElementById("step-counter").textContent = `${tIdx + 1}/${mod.tasks.length}`;
-    document.getElementById("progress-fill").style.width = `${((tIdx + 1) / mod.tasks.length) * 100}%`;
+    document.getElementById("explain-tag").textContent = `${course.title} • Part ${activeModuleIdx + 1} (${activeTaskIdx + 1}/${mod.tasks.length})`;
+    document.getElementById("explain-title").textContent = themeText(slide.title || item.title);
 
-    document.getElementById("explain-tag").textContent = `${course.title} • Part ${mIdx + 1} (${tIdx + 1}/${mod.tasks.length})`;
-    document.getElementById("explain-title").textContent = themeText(item.title);
-
-    // Plain-English concept definition callout
-    const conceptNote = getConceptDefinition(activeCourseKey, item);
+    const conceptNote = getConceptDefinition(activeCourseKey, slide);
     const calloutEl = document.getElementById("concept-callout");
     if (conceptNote) {
       calloutEl.textContent = "📘 " + conceptNote;
@@ -465,11 +477,62 @@ document.addEventListener("DOMContentLoaded", () => {
       calloutEl.classList.add("hidden");
     }
 
-    document.getElementById("explain-body").textContent = themeText(item.explain);
-    document.getElementById("explain-analogy").textContent = "💡 " + themeText(item.analogy);
-    document.getElementById("explain-code").textContent = themedExample;
+    document.getElementById("explain-body").textContent = themeText(slide.explain || "");
+
+    const analogyEl = document.getElementById("explain-analogy");
+    if (slide.analogy) {
+      analogyEl.textContent = "💡 " + themeText(slide.analogy);
+      analogyEl.classList.remove("hidden");
+    } else {
+      analogyEl.classList.add("hidden");
+    }
+
+    const exBox = document.getElementById("example-box");
+    const exLabel = document.getElementById("example-box-label");
+    if (themedExample) {
+      exBox.classList.remove("hidden");
+      if (exLabel) {
+        exLabel.textContent = activeCourseKey === "conversions"
+          ? "🔒 Step-by-Step Worked Example"
+          : "🔒 Example (copy disabled)";
+      }
+      document.getElementById("explain-code").textContent = themedExample;
+    } else {
+      exBox.classList.add("hidden");
+    }
 
     renderExampleOutput(activeCourseKey, themedExample);
+
+    const nextSlideBtn = document.getElementById("start-task-btn");
+    if (activeSlideIdx + 1 < slides.length) {
+      nextSlideBtn.textContent = `Next Explanation Slide (${activeSlideIdx + 2}/${slides.length}) →`;
+    } else {
+      nextSlideBtn.textContent = "Got It, Try Challenge →";
+    }
+
+    // Re-trigger gentle slide pop animation
+    const explainSlide = document.getElementById("explain-slide");
+    explainSlide.classList.remove("slide-enter");
+    void explainSlide.offsetWidth;
+    explainSlide.classList.add("slide-enter");
+    window.scrollTo(0, 0);
+  }
+
+  function startTask(mIdx, tIdx) {
+    activeModuleIdx = mIdx;
+    activeTaskIdx = tIdx;
+    activeSlideIdx = 0;
+
+    const course = ALL_COURSES[activeCourseKey];
+    const mod = course.modules[mIdx];
+    const item = mod.tasks[tIdx];
+
+    renderTaskJumper(mod);
+
+    document.getElementById("step-counter").textContent = `${tIdx + 1}/${mod.tasks.length}`;
+    document.getElementById("progress-fill").style.width = `${((tIdx + 1) / mod.tasks.length) * 100}%`;
+
+    renderExplainSlide();
 
     document.getElementById("task-tag").textContent = `CHALLENGE ${tIdx + 1} OF ${mod.tasks.length}`;
     document.getElementById("task-title").textContent = themeText(item.title);
@@ -486,125 +549,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.getElementById("start-task-btn").addEventListener("click", () => {
-    document.getElementById("explain-slide").classList.add("hidden");
-    const taskSlide = document.getElementById("task-slide");
-    taskSlide.classList.remove("hidden");
-    setTimeout(() => taskInput.focus(), 100);
+    const course = ALL_COURSES[activeCourseKey];
+    const item = course.modules[activeModuleIdx].tasks[activeTaskIdx];
+    const slides = getTaskSlides(item);
+
+    if (activeSlideIdx + 1 < slides.length) {
+      activeSlideIdx++;
+      renderExplainSlide();
+    } else {
+      document.getElementById("explain-slide").classList.add("hidden");
+      const taskSlide = document.getElementById("task-slide");
+      taskSlide.classList.remove("hidden");
+      setTimeout(() => taskInput.focus(), 100);
+    }
   });
 
   document.getElementById("peek-concept-btn").addEventListener("click", () => {
-    document.getElementById("task-slide").classList.add("hidden");
-    document.getElementById("explain-slide").classList.remove("hidden");
-  });
-
-  document.getElementById("toggle-clue-btn").addEventListener("click", () => {
-    document.getElementById("task-clue").classList.toggle("hidden");
-  });
-
-  // Clean Celebration Pop-up (No extra lines)
-  function openCelebrateModal(isNewSolve) {
-    const cat = CATEGORIES[state.category] || CATEGORIES.sports;
-    document.getElementById("modal-emoji").textContent = cat.winEmoji;
-    document.getElementById("modal-pill").textContent = isNewSolve ? "+15 XP EARNED" : "COMPLETED";
-    document.getElementById("modal-title").textContent = cat.winTitle;
-    document.getElementById("celebrate-modal").classList.remove("hidden");
-  }
-
-  document.getElementById("modal-next-btn").addEventListener("click", () => {
-    document.getElementById("celebrate-modal").classList.add("hidden");
-    const mod = ALL_COURSES[activeCourseKey].modules[activeModuleIdx];
-    if (activeTaskIdx + 1 < mod.tasks.length) {
-      startTask(activeModuleIdx, activeTaskIdx + 1);
-    } else {
-      openRoadmap(activeCourseKey);
-    }
-  });
-
-  document.getElementById("run-task-btn").addEventListener("click", () => {
-    const course = ALL_COURSES[activeCourseKey];
-    const item = course.modules[activeModuleIdx].tasks[activeTaskIdx];
-    const fb = document.getElementById("feedback-msg");
-    const expected = themeText(item.match);
-    const regex = new RegExp(expected, "i");
-
-    if (regex.test(taskInput.value.trim())) {
-      const taskId = `${activeCourseKey}_${activeModuleIdx}_${activeTaskIdx}`;
-      let isNewSolve = false;
-      if (!state.solvedIds.includes(taskId)) {
-        state.solvedIds.push(taskId);
-        state.xp += 15;
-        isNewSolve = true;
-        saveState();
-      }
-      fb.textContent = "";
-      openCelebrateModal(isNewSolve);
-    } else {
-      fb.style.color = "#DC2626";
-      fb.textContent = "❌ Not quite right, check your answer and try again.";
-      taskInput.classList.remove("shake-error");
-      void taskInput.offsetWidth;
-      taskInput.classList.add("shake-error");
-    }
-  });
-
-  document.getElementById("roadmap-back-btn").addEventListener("click", () => {
-    renderCourses();
-    switchTab("home-screen");
-  });
-
-  document.getElementById("lesson-back-btn").addEventListener("click", () => openRoadmap(activeCourseKey));
-
-  function updateProgressScreen() {
-    const statsGrid = document.getElementById("stats-grid");
-    if (!statsGrid) return;
-    statsGrid.innerHTML = "";
-
-    Object.keys(ALL_COURSES).forEach(key => {
-      const c = ALL_COURSES[key];
-      const done = getCourseSolvedCount(key);
-      const total = getCourseTotalTasks(key);
-      const box = document.createElement("div");
-      box.className = "stat-box";
-      box.innerHTML = `<strong>${done}/${total}</strong><span>${c.title}</span>`;
-      statsGrid.appendChild(box);
-    });
-
-    const backupBox = document.getElementById("backup-code-box");
-    if (backupBox) backupBox.value = btoa(JSON.stringify(state));
-  }
-
-  document.getElementById("copy-backup-btn").addEventListener("click", () => {
-    const box = document.getElementById("backup-code-box");
-    box.select();
-    document.execCommand("copy");
-    alert("Save code copied!");
-  });
-
-  document.getElementById("restore-backup-btn").addEventListener("click", () => {
-    const code = prompt("Paste your saved backup code:");
-    if (!code) return;
-    try {
-      const decoded = JSON.parse(atob(code.trim()));
-      if (decoded && Array.isArray(decoded.solvedIds)) {
-        state = decoded;
-        saveState();
-        applyTheme(state.category);
-        renderCourses();
-        alert("Progress restored successfully!");
-      }
-    } catch (e) {
-      alert("Invalid backup code.");
-    }
-  });
-
-  // Boot App
-  saveState();
-  if (state.onboarded) {
-    applyTheme(state.category);
-    renderCourses();
-    showTopScreen("main-container");
-    switchTab("home-screen");
-  } else {
-    showTopScreen("welcome-screen");
-  }
-});
+    activeSlideIdx = 0;
+    renderExplainSlide();
+    document.getElementById
