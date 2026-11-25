@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body data-theme="sports">
-  <!-- Dynamic Ambient Theme Layer (Shapes, Stars, Leaves, Turf Stripes) -->
   <div class="theme-backdrop" aria-hidden="true">
     <span class="ambient-orb orb-1"></span>
     <span class="ambient-orb orb-2"></span>
@@ -16,7 +15,7 @@
 
   <div class="app-shell">
 
-    <!-- PAGE 1: Clean Onboarding Welcome Screen -->
+    <!-- PAGE 1: Onboarding Welcome Screen -->
     <section id="welcome-screen" class="screen active">
       <div class="welcome-hero">
         <div class="hero-logo">
@@ -28,7 +27,7 @@
           </svg>
         </div>
         <h1>CodeStep</h1>
-        <p class="hero-tagline">Master HTML, CSS, Python &amp; C from zero through short, story-driven challenges tailored to what you love.</p>
+        <p class="hero-tagline">Master HTML, CSS, Python, C &amp; Number Systems from zero through short, story-driven challenges tailored to what you love.</p>
       </div>
       <button type="button" id="get-started-btn" class="btn-primary">Get Started →</button>
     </section>
@@ -37,7 +36,7 @@
     <section id="category-screen" class="screen">
       <div class="page-header">
         <h2>Choose Your World</h2>
-        <p>Pick a world to transform the entire app's style, colors, and coding challenges.</p>
+        <p>Pick a world to transform the entire app's style, colors, and challenges.</p>
       </div>
 
       <div class="category-grid">
@@ -77,7 +76,7 @@
         <div class="streak-pill" id="xp-display">⭐ 0 XP</div>
       </header>
 
-      <!-- TAB 1: Languages Home -->
+      <!-- TAB 1: Languages & Number Systems Home -->
       <main id="home-screen" class="tab-view active">
         <div class="section-intro">
           <h2>Learning Paths</h2>
@@ -85,11 +84,11 @@
         <div class="course-grid" id="course-grid"></div>
       </main>
 
-      <!-- SUB-PAGE: Module Roadmap -->
+      <!-- SUB-PAGE: Module / Track Roadmap -->
       <main id="roadmap-screen" class="tab-view">
-        <button type="button" id="roadmap-back-btn" class="btn-ghost">← All Languages</button>
+        <button type="button" id="roadmap-back-btn" class="btn-ghost">← All Tracks</button>
         <div class="section-intro">
-          <h2 id="roadmap-title">Language Roadmap</h2>
+          <h2 id="roadmap-title">Roadmap</h2>
           <p id="roadmap-desc"></p>
         </div>
         <div class="module-list" id="module-list"></div>
@@ -98,24 +97,31 @@
       <!-- SUB-PAGE: Two-Slide Task Workspace -->
       <main id="lesson-screen" class="tab-view">
         <div class="lesson-nav">
-          <button type="button" id="lesson-back-btn" class="btn-ghost">← Modules</button>
+          <button type="button" id="lesson-back-btn" class="btn-ghost">← Parts</button>
           <div class="progress-track">
             <div class="progress-fill" id="progress-fill"></div>
           </div>
           <span id="step-counter" class="step-text">1/4</span>
         </div>
 
-        <!-- SLIDE A: Short Themed Explanation -->
+        <!-- Reviewable Task Pill Bar (Jump to any unlocked/solved task anytime) -->
+        <div id="task-jumper" class="task-jumper"></div>
+
+        <!-- SLIDE A: Rich Beginner Explanation -->
         <div id="explain-slide" class="card slide-card slide-enter">
           <div class="card-meta">
             <span class="tag-pill" id="explain-tag">HTML • Task 1</span>
             <span class="stage-badge">STEP 1: LEARN</span>
           </div>
           <h3 id="explain-title">Concept Title</h3>
+
+          <div id="concept-callout" class="concept-callout"></div>
+
           <p id="explain-body" class="explanation-text"></p>
           <div id="explain-analogy" class="analogy-box"></div>
+
           <div class="code-box no-copy" id="example-box">
-            <div class="no-copy-hint">🔒 Example pattern (copy disabled)</div>
+            <div class="no-copy-hint" id="example-box-label">🔒 Example (copy disabled)</div>
             <pre><code id="explain-code"></code></pre>
           </div>
 
@@ -127,20 +133,20 @@
           <button type="button" id="start-task-btn" class="btn-primary">Got It, Try Challenge →</button>
         </div>
 
-        <!-- SLIDE B: Coding Challenge -->
+        <!-- SLIDE B: Coding / Conversion Challenge -->
         <div id="task-slide" class="card slide-card slide-enter hidden">
           <div class="card-meta">
             <span class="tag-pill" id="task-tag">CHALLENGE</span>
             <button type="button" id="peek-concept-btn" class="btn-ghost">📖 Re-read Lesson</button>
           </div>
-          <h3 id="task-title">Write the Code</h3>
+          <h3 id="task-title">Solve the Challenge</h3>
           <p id="task-prompt" class="explanation-text"></p>
 
           <button type="button" id="toggle-clue-btn" class="clue-toggle">💡 Need a rule clue?</button>
           <p id="task-clue" class="task-hint hidden"></p>
 
-          <textarea id="task-input" class="code-input" rows="4" spellcheck="false" autocomplete="off" placeholder="Type your code here..."></textarea>
-          <button type="button" id="run-task-btn" class="btn-secondary">Check My Code ▶</button>
+          <textarea id="task-input" class="code-input" rows="4" spellcheck="false" autocomplete="off" placeholder="Type your answer here..."></textarea>
+          <button type="button" id="run-task-btn" class="btn-secondary">Check My Answer ▶</button>
           <p id="feedback-msg" class="feedback-msg"></p>
         </div>
       </main>
@@ -174,7 +180,7 @@
       <main id="about-screen" class="tab-view">
         <div class="section-intro">
           <h2>About CodeStep</h2>
-          <p>Built to make coding fun, visual, and accessible for beginners.</p>
+          <p>Built to make coding and computer fundamentals fun, visual, and accessible for beginners.</p>
         </div>
 
         <div class="card">
@@ -182,7 +188,7 @@
           <ul class="about-list">
             <li><strong>Story-Driven Learning:</strong> Concepts adapt to Sports, Nature, Food, or Space.</li>
             <li><strong>Active Recall:</strong> Copy-paste is disabled so you build real muscle memory.</li>
-            <li><strong>Step-by-Step Mastery:</strong> Structured modules from zero to writing real code.</li>
+            <li><strong>Review Anytime:</strong> Revisit any unlocked explanation or challenge whenever you want.</li>
           </ul>
         </div>
 
@@ -210,14 +216,13 @@
       </nav>
     </div>
 
-    <!-- THEMED CELEBRATION POP-UP MODAL -->
+    <!-- CLEAN CELEBRATION POP-UP MODAL (No extra lines) -->
     <div id="celebrate-modal" class="modal-backdrop hidden">
       <div class="modal-card">
         <div class="modal-emoji" id="modal-emoji">🏆</div>
         <div class="modal-pill" id="modal-pill">+15 XP EARNED</div>
         <h3 id="modal-title">Goal Scored!</h3>
-        <p id="modal-desc">Clean syntax! Ready for the next play?</p>
-        <button type="button" id="modal-next-btn" class="btn-primary">Continue →</button>
+        <button type="button" id="modal-next-btn" class="btn-primary" style="margin-top:16px;">Continue →</button>
       </div>
     </div>
 
@@ -227,6 +232,7 @@
   <script src="data-css.js"></script>
   <script src="data-python.js"></script>
   <script src="data-c.js"></script>
+  <script src="data-conversions.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
