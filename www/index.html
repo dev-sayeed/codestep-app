@@ -9,244 +9,210 @@
 <body data-theme="sports">
   <div class="app-shell">
 
-    <!-- PAGE 0: Professional Welcome / Landing Screen -->
-    <section id="welcome-screen" class="screen active welcome-screen">
+    <!-- PAGE 1: Clean Onboarding Welcome Screen -->
+    <section id="welcome-screen" class="screen active">
       <div class="welcome-hero">
         <div class="hero-logo">
-          <svg width="64" height="64" viewBox="0 0 36 36" fill="none">
-            <rect width="36" height="36" rx="11" fill="var(--accent)" />
+          <svg width="68" height="68" viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="10" fill="var(--accent)" />
             <path d="M13 12L7 18L13 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M23 12L29 18L23 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             <circle cx="18" cy="18" r="2.5" fill="#FFFFFF"/>
           </svg>
         </div>
         <h1>CodeStep</h1>
-        <p class="hero-tagline">Master HTML, CSS, Python & C from zero—through short, story-driven challenges tailored to what you love.</p>
+        <p class="hero-tagline">Master HTML, CSS, Python &amp; C from zero through short, story-driven challenges tailored to what you love.</p>
       </div>
-
-      <div class="hero-features">
-        <div class="feat-row"><span>🎯</span><span>40+ hands-on coding tasks per language</span></div>
-        <div class="feat-row"><span>⚡</span><span>100% offline—learn anywhere, zero lag</span></div>
-        <div class="feat-row"><span>🧠</span><span>No copy-paste shortcuts—build real memory</span></div>
-      </div>
-
-      <div class="welcome-actions">
-        <button id="welcome-start-btn" class="btn-primary">Get Started →</button>
-      </div>
+      <button type="button" id="get-started-btn" class="btn-primary">Get Started →</button>
     </section>
 
-    <!-- PAGE 1: First-Time Interest Selection -->
+    <!-- PAGE 2: Topic & Theme Selector -->
     <section id="category-screen" class="screen">
-      <div class="top-simple">
-        <button id="cat-back-btn" class="btn-ghost">← Back</button>
-      </div>
-      <div class="welcome-box">
-        <h2>Personalize your world</h2>
-        <p>Pick one interest. Every explanation slide, code example, and challenge will adapt to match it.</p>
+      <div class="page-header">
+        <h2>Choose Your World</h2>
+        <p>Every lesson, analogy, and coding challenge adapts to your favorite topic.</p>
       </div>
 
       <div class="category-grid">
-        <button class="cat-card" data-cat="sports">
+        <button type="button" class="cat-card" data-cat="sports">
           <span class="cat-emoji">⚽</span>
           <h3>Sports</h3>
-          <p>Match scores, player stats & tournament logic</p>
+          <p>Match scores, timers &amp; player stats</p>
         </button>
-        <button class="cat-card" data-cat="nature">
+        <button type="button" class="cat-card" data-cat="nature">
           <span class="cat-emoji">🌿</span>
           <h3>Nature</h3>
-          <p>Wildlife reserves, weather & ecosystems</p>
+          <p>Wildlife, rivers &amp; forest trails</p>
         </button>
-        <button class="cat-card" data-cat="food">
+        <button type="button" class="cat-card" data-cat="food">
           <span class="cat-emoji">🍕</span>
           <h3>Food</h3>
-          <p>Kitchen recipes, cafe menus & billing</p>
+          <p>Recipes, cafe menus &amp; orders</p>
         </button>
-        <button class="cat-card" data-cat="space">
+        <button type="button" class="cat-card" data-cat="space">
           <span class="cat-emoji">🚀</span>
           <h3>Space</h3>
-          <p>Rocket telemetry, planets & orbital math</p>
+          <p>Rockets, orbits &amp; mission logs</p>
         </button>
       </div>
     </section>
 
-    <!-- MAIN APP HEADER (Visible on Learn, Progress, About tabs) -->
-    <header id="main-topbar" class="topbar hidden">
-      <div class="brand">
-        <svg width="30" height="30" viewBox="0 0 36 36" fill="none">
-          <rect width="36" height="36" rx="9" fill="var(--accent)" />
-          <path d="M13 12L7 18L13 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M23 12L29 18L23 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="18" cy="18" r="2.5" fill="#FFFFFF"/>
-        </svg>
-        <div>
-          <h1>CodeStep</h1>
-          <span class="theme-chip" id="active-theme-label">⚽ Sports Theme</span>
+    <!-- MAIN APP SHELL (With Bottom Navigation Bar) -->
+    <div id="main-container" class="main-container hidden">
+      <header class="topbar">
+        <div class="brand">
+          <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="9" fill="var(--accent)" />
+            <path d="M13 12L7 18L13 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23 12L29 18L23 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="18" cy="18" r="2.5" fill="#FFFFFF"/>
+          </svg>
+          <div>
+            <h1>CodeStep</h1>
+            <span class="theme-chip" id="active-theme-label">⚽ Sports Theme</span>
+          </div>
         </div>
-      </div>
-      <div class="streak-pill" id="xp-display">⭐ 0 XP</div>
-    </header>
+        <div class="streak-pill" id="xp-display">⭐ 0 XP</div>
+      </header>
 
-    <!-- TAB 1: Learn (Language Hub) -->
-    <section id="home-screen" class="screen has-nav">
-      <div class="welcome-box">
-        <h2>Choose a Track</h2>
-        <p>40+ guided slides & coding tasks per language.</p>
-      </div>
-      <div class="course-grid" id="course-grid"></div>
-    </section>
-
-    <!-- SUB-PAGE: Module Roadmap -->
-    <section id="roadmap-screen" class="screen">
-      <div class="lesson-nav">
-        <button id="roadmap-back-btn" class="btn-ghost">← All Tracks</button>
-        <span id="roadmap-progress-text" class="step-text">0/40 Done</span>
-      </div>
-      <div class="welcome-box">
-        <h2 id="roadmap-title">HTML Curriculum</h2>
-        <p id="roadmap-desc"></p>
-      </div>
-      <div class="module-list" id="module-list"></div>
-    </section>
-
-    <!-- SUB-PAGE: Two-Step Interactive Workspace (Slide 1: Explanation -> Slide 2: Task) -->
-    <section id="lesson-screen" class="screen">
-      <div class="lesson-nav">
-        <button id="lesson-back-btn" class="btn-ghost">← Modules</button>
-        <div class="progress-track">
-          <div class="progress-fill" id="progress-fill"></div>
+      <!-- TAB 1: Languages Home -->
+      <main id="home-screen" class="tab-view active">
+        <div class="section-intro">
+          <h2>Learning Paths</h2>
+          <p>40+ interactive tasks per language. Progress saves automatically.</p>
         </div>
-        <span id="step-counter" class="step-text">Task 1/4</span>
-      </div>
+        <div class="course-grid" id="course-grid"></div>
+      </main>
 
-      <!-- SLIDE A: Short, Fun Themed Explanation Before Each Task -->
-      <div id="explain-slide" class="card slide-card">
-        <div class="card-meta">
-          <span class="tag-pill" id="slide-lang-tag">HTML</span>
-          <span class="stage-badge">LEARN CONCEPT</span>
+      <!-- SUB-PAGE: Module Roadmap -->
+      <main id="roadmap-screen" class="tab-view">
+        <button type="button" id="roadmap-back-btn" class="btn-ghost">← All Languages</button>
+        <div class="section-intro">
+          <h2 id="roadmap-title">Language Roadmap</h2>
+          <p id="roadmap-desc"></p>
         </div>
-        <h3 id="slide-title">Concept Title</h3>
-        <div class="story-banner" id="slide-story"></div>
-        <p id="slide-body" class="explanation-text"></p>
+        <div class="module-list" id="module-list"></div>
+      </main>
 
-        <div class="code-box no-copy" id="slide-code-box">
-          <div class="no-copy-hint">🔒 Study this pattern (copy disabled)</div>
-          <pre><code id="slide-code"></code></pre>
+      <!-- SUB-PAGE: Two-Slide Task Workspace -->
+      <main id="lesson-screen" class="tab-view">
+        <div class="lesson-nav">
+          <button type="button" id="lesson-back-btn" class="btn-ghost">← Modules</button>
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <span id="step-counter" class="step-text">1/4</span>
         </div>
 
-        <button id="goto-task-btn" class="btn-primary">Got It, Start Task →</button>
-      </div>
-
-      <!-- SLIDE B: Hands-On Coding Task (Example hidden so user writes from memory) -->
-      <div id="task-slide" class="card slide-card hidden">
-        <div class="card-meta">
-          <span class="tag-pill" id="task-lang-tag">HTML</span>
-          <span class="stage-badge">WRITE CODE</span>
+        <!-- SLIDE A: Short Themed Explanation -->
+        <div id="explain-slide" class="card slide-card">
+          <div class="card-meta">
+            <span class="tag-pill" id="explain-tag">HTML • Task 1</span>
+            <span class="stage-badge">STEP 1: LEARN</span>
+          </div>
+          <h3 id="explain-title">Concept Title</h3>
+          <p id="explain-body" class="explanation-text"></p>
+          <div id="explain-analogy" class="analogy-box"></div>
+          <div class="code-box no-copy" id="example-box">
+            <div class="no-copy-hint">🔒 Example pattern (copy disabled)</div>
+            <pre><code id="explain-code"></code></pre>
+          </div>
+          <button type="button" id="start-task-btn" class="btn-primary">Got It, Try Challenge →</button>
         </div>
-        <h3 id="task-title">Your Turn</h3>
-        <p class="quiz-prompt" id="task-prompt"></p>
 
-        <button type="button" id="toggle-clue-btn" class="clue-toggle">💡 Need a concept clue?</button>
-        <p class="task-hint hidden" id="task-hint"></p>
+        <!-- SLIDE B: Coding Challenge -->
+        <div id="task-slide" class="card slide-card hidden">
+          <div class="card-meta">
+            <span class="tag-pill" id="task-tag">CHALLENGE</span>
+            <button type="button" id="peek-concept-btn" class="btn-ghost">📖 Re-read Lesson</button>
+          </div>
+          <h3 id="task-title">Write the Code</h3>
+          <p id="task-prompt" class="explanation-text"></p>
 
-        <textarea id="task-input" class="code-input" rows="4" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Type your code here..."></textarea>
-        <button id="run-task-btn" class="btn-secondary">Check My Code ▶</button>
-        <p class="feedback-msg" id="feedback-msg"></p>
+          <button type="button" id="toggle-clue-btn" class="clue-toggle">💡 Need a rule clue?</button>
+          <p id="task-clue" class="task-hint hidden"></p>
 
-        <div class="task-footer-btns">
-          <button id="review-slide-btn" class="btn-ghost">← Re-read Slide</button>
-          <button id="next-task-btn" class="btn-primary hidden">Next →</button>
+          <textarea id="task-input" class="code-input" rows="4" spellcheck="false" autocomplete="off" placeholder="Type your code here..."></textarea>
+          <button type="button" id="run-task-btn" class="btn-secondary">Check My Code ▶</button>
+          <p id="feedback-msg" class="feedback-msg"></p>
+          <button type="button" id="next-task-btn" class="btn-primary hidden">Next Task →</button>
         </div>
-      </div>
-    </section>
+      </main>
 
-    <!-- SUB-PAGE: Module Complete -->
-    <section id="complete-screen" class="screen">
-      <div class="card complete-card">
-        <div class="trophy" id="complete-emoji">🏆</div>
-        <h2 id="complete-title">Module Completed!</h2>
-        <p id="complete-summary"></p>
-        <button id="complete-continue-btn" class="btn-primary">Continue Roadmap →</button>
-      </div>
-    </section>
-
-    <!-- TAB 2: Progress & Settings -->
-    <section id="progress-screen" class="screen has-nav">
-      <div class="welcome-box">
-        <h2>Your Learning Stats</h2>
-        <p>Saved automatically on your device for offline access.</p>
-      </div>
-
-      <div class="stats-summary card" id="stats-breakdown"></div>
-
-      <div class="card settings-card">
-        <h3>App Theme & Interest</h3>
-        <p class="small-muted">Switch your story theme anytime without losing progress.</p>
-        <div class="mini-theme-row">
-          <button class="mini-theme-btn" data-cat="sports">⚽ Sports</button>
-          <button class="mini-theme-btn" data-cat="nature">🌿 Nature</button>
-          <button class="mini-theme-btn" data-cat="food">🍕 Food</button>
-          <button class="mini-theme-btn" data-cat="space">🚀 Space</button>
+      <!-- TAB 2: Progress & Settings -->
+      <main id="progress-screen" class="tab-view">
+        <div class="section-intro">
+          <h2>Your Progress</h2>
+          <p>Saved offline automatically on your device.</p>
         </div>
-      </div>
 
-      <div class="card settings-card">
-        <h3>Backup & Restore Progress</h3>
-        <p class="small-muted">Copy your save key before reinstalling or updating the app.</p>
-        <div class="backup-row">
-          <button id="export-btn" class="btn-secondary">Copy Save Code</button>
-          <button id="import-btn" class="btn-ghost">Restore Code</button>
+        <div class="stats-grid" id="stats-grid"></div>
+
+        <div class="card">
+          <h3>Change Theme World</h3>
+          <p class="small-muted">Switch between Sports, Nature, Food, or Space anytime without losing XP.</p>
+          <button type="button" id="switch-theme-btn" class="btn-secondary" style="margin-top:10px;">🎨 Switch Topic Theme</button>
         </div>
-        <p id="backup-msg" class="feedback-msg"></p>
-      </div>
-    </section>
 
-    <!-- TAB 3: About & Creator (LinkedIn placed cleanly here) -->
-    <section id="about-screen" class="screen has-nav">
-      <div class="welcome-box">
-        <h2>About CodeStep</h2>
-        <p>Built to make programming approachable for everyone.</p>
-      </div>
+        <div class="card">
+          <h3>Backup Save Code</h3>
+          <p class="small-muted">Copy this code if you ever reinstall the app or switch phones.</p>
+          <textarea id="backup-code-box" class="code-input" rows="2" readonly style="margin-top:8px; font-size:11px;"></textarea>
+          <div style="display:flex; gap:8px;">
+            <button type="button" id="copy-backup-btn" class="btn-secondary">Copy Code</button>
+            <button type="button" id="restore-backup-btn" class="btn-ghost" style="border:1px solid #CBD5E1; border-radius:10px; padding:0 12px;">Restore</button>
+          </div>
+        </div>
+      </main>
 
-      <div class="card about-card">
-        <h3>Why CodeStep?</h3>
-        <p class="explanation-text">
-          Most coding tutorials drown beginners in heavy jargon or let them blindly copy-paste answers. CodeStep pairs bite-sized, real-world stories with active typing challenges so syntax sticks naturally.
-        </p>
-      </div>
+      <!-- TAB 3: About Page -->
+      <main id="about-screen" class="tab-view">
+        <div class="section-intro">
+          <h2>About CodeStep</h2>
+          <p>Built to make coding fun, visual, and accessible for absolute beginners.</p>
+        </div>
 
-      <div class="card creator-card">
-        <span class="tag-pill">CREATOR</span>
-        <h3>Sayeed Akhter</h3>
-        <p class="explanation-text">
-          Computer Science Educator & Software Developer from Assam, India. Focused on building practical, lightweight educational tools and web applications.
-        </p>
-        <a href="https://www.linkedin.com/in/sayeed-akhter" target="_blank" rel="noopener" class="btn-primary linkedin-btn">
-          Connect on LinkedIn ↗
-        </a>
-      </div>
-    </section>
+        <div class="card">
+          <h3>How It Works</h3>
+          <ul class="about-list">
+            <li><strong>Story-Driven Learning:</strong> Concepts adapt to Sports, Nature, Food, or Space.</li>
+            <li><strong>Active Recall:</strong> Copy-paste is disabled so you build real muscle memory.</li>
+            <li><strong>100% Offline:</strong> Zero internet required after installation.</li>
+          </ul>
+        </div>
 
-    <!-- NATIVE BOTTOM NAVIGATION BAR -->
-    <nav id="bottom-nav" class="bottom-nav hidden">
-      <button class="nav-tab active" data-target="home-screen">
-        <span class="nav-icon">📚</span>
-        <span>Learn</span>
-      </button>
-      <button class="nav-tab" data-target="progress-screen">
-        <span class="nav-icon">📊</span>
-        <span>Progress</span>
-      </button>
-      <button class="nav-tab" data-target="about-screen">
-        <span class="nav-icon">👤</span>
-        <span>About</span>
-      </button>
-    </nav>
+        <div class="card creator-card">
+          <div class="creator-badge">CREATOR</div>
+          <h3>Sayeed Akhter</h3>
+          <p class="small-muted">Computer Science Educator &amp; Software Developer</p>
+          <a href="https://www.linkedin.com/in/sayeed-akhter" target="_blank" rel="noopener" class="linkedin-btn">
+            Connect on LinkedIn ↗
+          </a>
+        </div>
+      </main>
 
+      <!-- Native Bottom Tab Navigation -->
+      <nav class="bottom-nav">
+        <button type="button" class="nav-tab active" data-tab="home-screen">
+          <span class="nav-icon">📚</span>
+          <span>Learn</span>
+        </button>
+        <button type="button" class="nav-tab" data-tab="progress-screen">
+          <span class="nav-icon">📊</span>
+          <span>Progress</span>
+        </button>
+        <button type="button" class="nav-tab" data-tab="about-screen">
+          <span class="nav-icon">ℹ️</span>
+          <span>About</span>
+        </button>
+      </nav>
+    </div>
   </div>
 
-  <script src="db.js"></script>
-  <script src="data-web.js"></script>
-  <script src="data-prog.js"></script>
+  <script src="data-html.js"></script>
+  <script src="data-css.js"></script>
+  <script src="data-python.js"></script>
+  <script src="data-c.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
