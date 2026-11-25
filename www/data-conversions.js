@@ -758,4 +758,1013 @@ const COURSE_CONVERSIONS = {
           concept: "16 + 5 = 21: Left digit 2 = 16; right digit = 5.",
           explain: "(2 × 8) + 5 = 21.",
           analogy: "16 + 5 = 21.",
-          example: "
+          example: "Octal 25 = 16 + 5 = 21",
+          prompt: "Convert Octal 25 into Decimal.",
+          clue: "Add 16 + 5.",
+          match: "^21$"
+        },
+        {
+          title: "Practice: Octal 30 to Decimal",
+          concept: "3 × 8 = 24: Three packs of 8 and 0 ones.",
+          explain: "(3 × 8) + 0 = 24.",
+          analogy: "3 packs of 8 = 24.",
+          example: "Octal 30 = 3 × 8 = 24",
+          prompt: "Convert Octal 30 into Decimal.",
+          clue: "Multiply 3 × 8.",
+          match: "^24$"
+        },
+        {
+          title: "Practice: Octal 32 to Decimal",
+          concept: "24 + 2 = 26: Three packs of 8 (24) plus 2 ones.",
+          explain: "(3 × 8) + 2 = 26.",
+          analogy: "24 + 2 = 26.",
+          example: "Octal 32 = 24 + 2 = 26",
+          prompt: "Convert Octal 32 into Decimal.",
+          clue: "Add 24 + 2.",
+          match: "^26$"
+        },
+        {
+          title: "Practice: Octal 40 to Decimal",
+          concept: "4 × 8 = 32: Four packs of 8 and 0 ones.",
+          explain: "(4 × 8) + 0 = 32.",
+          analogy: "4 × 8 = 32.",
+          example: "Octal 40 = 4 × 8 = 32",
+          prompt: "Convert Octal 40 into Decimal.",
+          clue: "Multiply 4 × 8.",
+          match: "^32$"
+        },
+        {
+          title: "Decimal to Octal (Packing Groups of 8)",
+          slides: [
+            {
+              title: "Slide 1: How Many 8s Fit Inside?",
+              concept: "Subtract 8 Method: See how many full 8s fit into your Decimal number (that's the left digit), and whatever is left over is the right digit!",
+              explain: "Example for Decimal 12: One 8 fits inside 12 (left digit = 1). Subtract 12 - 8 = 4 left over (right digit = 4). Answer: Octal 14!",
+              analogy: "12 pencils = 1 pack of 8 + 4 loose pencils → 14.",
+              example: "Decimal 10 = 8 + 2  →  Octal 12\nDecimal 12 = 8 + 4  →  Octal 14"
+            }
+          ],
+          prompt: "Convert Decimal 10 into Octal.",
+          clue: "10 = 8 + 2 → 1 group of 8 and 2 left over.",
+          match: "^12$"
+        },
+        {
+          title: "Practice: Decimal 11 to Octal",
+          concept: "11 = 8 + 3: One group of 8 and 3 left over.",
+          explain: "Left digit = 1, right digit = 3 → Octal 13.",
+          analogy: "8 + 3 = 11.",
+          example: "Decimal 11 = 8 + 3 → Octal 13",
+          prompt: "Convert Decimal 11 into Octal.",
+          clue: "Write 13.",
+          match: "^13$"
+        },
+        {
+          title: "Practice: Decimal 14 to Octal",
+          concept: "14 = 8 + 6: One group of 8 and 6 left over.",
+          explain: "Left digit = 1, right digit = 6 → Octal 16.",
+          analogy: "8 + 6 = 14.",
+          example: "Decimal 14 = 8 + 6 → Octal 16",
+          prompt: "Convert Decimal 14 into Octal.",
+          clue: "14 - 8 = 6, so write 16.",
+          match: "^16$"
+        },
+        {
+          title: "Practice: Decimal 15 to Octal",
+          concept: "15 = 8 + 7: One group of 8 and 7 left over.",
+          explain: "Left digit = 1, right digit = 7 → Octal 17.",
+          analogy: "8 + 7 = 15.",
+          example: "Decimal 15 = 8 + 7 → Octal 17",
+          prompt: "Convert Decimal 15 into Octal.",
+          clue: "Write 17.",
+          match: "^17$"
+        },
+        {
+          title: "Practice: Decimal 16 to Octal",
+          concept: "16 = 2 × 8: Two full groups of 8 and 0 left over.",
+          explain: "Left digit = 2, right digit = 0 → Octal 20.",
+          analogy: "17 in Octal rolls over to 20 at Decimal 16!",
+          example: "Decimal 16 = 2 × 8 + 0 → Octal 20",
+          prompt: "Convert Decimal 16 into Octal.",
+          clue: "2 groups of 8 and 0 ones → 20.",
+          match: "^20$"
+        },
+        {
+          title: "Practice: Decimal 18 to Octal",
+          concept: "18 = 16 + 2: Two groups of 8 (16) plus 2 left over.",
+          explain: "Left digit = 2, right digit = 2 → Octal 22.",
+          analogy: "16 + 2 = 18.",
+          example: "Decimal 18 = 16 + 2 → Octal 22",
+          prompt: "Convert Decimal 18 into Octal.",
+          clue: "Write 22.",
+          match: "^22$"
+        },
+        {
+          title: "Practice: Decimal 20 to Octal",
+          concept: "20 = 16 + 4: Two groups of 8 (16) plus 4 left over.",
+          explain: "Left digit = 2, right digit = 4 → Octal 24.",
+          analogy: "16 + 4 = 20.",
+          example: "Decimal 20 = 16 + 4 → Octal 24",
+          prompt: "Convert Decimal 20 into Octal.",
+          clue: "2 groups of 8 plus 4 → 24.",
+          match: "^24$"
+        },
+        {
+          title: "Practice: Decimal 23 to Octal",
+          concept: "23 = 16 + 7: Two groups of 8 (16) plus 7 left over.",
+          explain: "Left digit = 2, right digit = 7 → Octal 27.",
+          analogy: "16 + 7 = 23.",
+          example: "Decimal 23 = 16 + 7 → Octal 27",
+          prompt: "Convert Decimal 23 into Octal.",
+          clue: "Write 27.",
+          match: "^27$"
+        },
+        {
+          title: "Practice: Decimal 24 to Octal",
+          concept: "24 = 3 × 8: Three full groups of 8 and 0 left over.",
+          explain: "Left digit = 3, right digit = 0 → Octal 30.",
+          analogy: "3 packs of 8 = 24.",
+          example: "Decimal 24 = 3 × 8 + 0 → Octal 30",
+          prompt: "Convert Decimal 24 into Octal.",
+          clue: "Write 30.",
+          match: "^30$"
+        },
+        {
+          title: "Practice: Decimal 25 to Octal",
+          concept: "25 = 24 + 1: Three groups of 8 (24) plus 1 left over.",
+          explain: "Left digit = 3, right digit = 1 → Octal 31.",
+          analogy: "24 + 1 = 25.",
+          example: "Decimal 25 = 24 + 1 → Octal 31",
+          prompt: "Convert Decimal 25 into Octal.",
+          clue: "Write 31.",
+          match: "^31$"
+        },
+        {
+          title: "Practice: Decimal 28 to Octal",
+          concept: "28 = 24 + 4: Three groups of 8 (24) plus 4 left over.",
+          explain: "Left digit = 3, right digit = 4 → Octal 34.",
+          analogy: "24 + 4 = 28.",
+          example: "Decimal 28 = 24 + 4 → Octal 34",
+          prompt: "Convert Decimal 28 into Octal.",
+          clue: "Write 34.",
+          match: "^34$"
+        },
+        {
+          title: "Practice: Decimal 31 to Octal",
+          concept: "31 = 24 + 7: Three groups of 8 (24) plus 7 left over.",
+          explain: "Left digit = 3, right digit = 7 → Octal 37.",
+          analogy: "24 + 7 = 31.",
+          example: "Decimal 31 = 24 + 7 → Octal 37",
+          prompt: "Convert Decimal 31 into Octal.",
+          clue: "Write 37.",
+          match: "^37$"
+        }
+      ]
+    },
+
+    /* =========================================================================
+       PART 4: BINARY <-> HEXADECIMAL (25 TASKS)
+       ========================================================================= */
+    {
+      title: "Binary ⇄ Hexadecimal (25 Tasks)",
+      tasks: [
+        {
+          title: "The 4-Bit Magic Shortcut",
+          slides: [
+            {
+              title: "Slide 1: Why 4 Binary Bits = 1 Hex Digit",
+              concept: "4-Bit Nibble Match: Four binary boxes [8][4][2][1] can make any number from 0 (0000) to 15 (1111). Hexadecimal has 16 symbols (0–9 and A–F) for those exact same 0 to 15 values!",
+              explain: "That means EVERY 4 binary digits turn into ONE single Hex character! No giant math needed.",
+              analogy: "Hex is like a zip file that shrinks 4 binary switches into 1 character.",
+              example: "Binary 0000 = 0  → Hex 0\nBinary 1001 = 9  → Hex 9\nBinary 1010 = 10 → Hex A\nBinary 1111 = 15 → Hex F"
+            },
+            {
+              title: "Slide 2: 2-Step Method (Binary → Hex)",
+              concept: "Step 1: Add using [8][4][2][1]. Step 2: If the sum is 10–15, swap it for A–F!",
+              explain: "Example: Binary 1100 → 8 + 4 = 12. Look up 12 in A–F: A=10, B=11, C=12 → Hex C!",
+              analogy: "Calculate [8][4][2][1], then convert 10–15 to A–F.",
+              example: "Binary 1100 → 8 + 4 = 12 → Hex C"
+            }
+          ],
+          prompt: "Convert Binary 1010 into Hexadecimal.",
+          clue: "In [8][4][2][1], 8 + 2 = 10. What letter is 10 in Hex?",
+          match: "^A$"
+        },
+        {
+          title: "Practice: Binary 1011 to Hex",
+          concept: "8 + 2 + 1 = 11: 11 in Hex is B.",
+          explain: "Use [8][4][2][1] on 1011 → 11 → Hex B.",
+          analogy: "11 = B.",
+          example: "Binary 1011 → 11 → Hex B",
+          prompt: "Convert Binary 1011 into Hexadecimal.",
+          clue: "8 + 2 + 1 = 11, which is letter B.",
+          match: "^B$"
+        },
+        {
+          title: "Practice: Binary 1100 to Hex",
+          concept: "8 + 4 = 12: 12 in Hex is C.",
+          explain: "Use [8][4][2][1] on 1100 → 12 → Hex C.",
+          analogy: "12 = C.",
+          example: "Binary 1100 → 12 → Hex C",
+          prompt: "Convert Binary 1100 into Hexadecimal.",
+          clue: "8 + 4 = 12, which is letter C.",
+          match: "^C$"
+        },
+        {
+          title: "Practice: Binary 1101 to Hex",
+          concept: "8 + 4 + 1 = 13: 13 in Hex is D.",
+          explain: "Use [8][4][2][1] on 1101 → 13 → Hex D.",
+          analogy: "13 = D.",
+          example: "Binary 1101 → 13 → Hex D",
+          prompt: "Convert Binary 1101 into Hexadecimal.",
+          clue: "8 + 4 + 1 = 13 → D.",
+          match: "^D$"
+        },
+        {
+          title: "Practice: Binary 1110 to Hex",
+          concept: "8 + 4 + 2 = 14: 14 in Hex is E.",
+          explain: "Use [8][4][2][1] on 1110 → 14 → Hex E.",
+          analogy: "14 = E.",
+          example: "Binary 1110 → 14 → Hex E",
+          prompt: "Convert Binary 1110 into Hexadecimal.",
+          clue: "8 + 4 + 2 = 14 → E.",
+          match: "^E$"
+        },
+        {
+          title: "Practice: Binary 1111 to Hex",
+          concept: "8 + 4 + 2 + 1 = 15: 15 in Hex is F.",
+          explain: "All four bits ON = 15 = Hex F.",
+          analogy: "15 = F.",
+          example: "Binary 1111 → 15 → Hex F",
+          prompt: "Convert Binary 1111 into Hexadecimal.",
+          clue: "15 is F.",
+          match: "^F$"
+        },
+        {
+          title: "Practice: Binary 0111 to Hex",
+          concept: "4 + 2 + 1 = 7: Numbers 0–9 stay normal digits in Hex.",
+          explain: "In [8][4][2][1], 0111 = 7 → Hex 7.",
+          analogy: "7 = 7.",
+          example: "Binary 0111 → 7 → Hex 7",
+          prompt: "Convert Binary 0111 into Hexadecimal.",
+          clue: "4 + 2 + 1 = 7.",
+          match: "^7$"
+        },
+        {
+          title: "8-Bit Binary to 2-Digit Hex",
+          slides: [
+            {
+              title: "Slide 1: Split 8 Bits Down the Middle!",
+              concept: "Split into 4 + 4: To convert an 8-bit binary byte into Hex, split it into TWO 4-bit groups (left 4 bits and right 4 bits).",
+              explain: "Convert the left 4 bits using [8][4][2][1], then convert the right 4 bits using [8][4][2][1], and write both Hex characters side-by-side!",
+              analogy: "Solve two mini 4-bit puzzles instead of one big 8-bit puzzle!",
+              example: "Binary:   0001  |  1010\n[8421]:    1    |   10 (A)  →  Hex 1A"
+            }
+          ],
+          prompt: "Convert Binary 00011010 into Hexadecimal.",
+          clue: "Left 4 bits (0001) = 1. Right 4 bits (1010) = 10 = A. Put them together: 1A.",
+          match: "^1A$"
+        },
+        {
+          title: "Practice: Binary 00101111 to Hex",
+          concept: "Split 0010 | 1111: Left = 2, Right = 15 (F).",
+          explain: "0010 is 2; 1111 is F → Hex 2F.",
+          analogy: "2 and F → 2F.",
+          example: "0010 | 1111 → 2F",
+          prompt: "Convert Binary 00101111 into Hexadecimal.",
+          clue: "Left 0010 = 2, right 1111 = F.",
+          match: "^2F$"
+        },
+        {
+          title: "Practice: Binary 10100101 to Hex",
+          concept: "Split 1010 | 0101: Left = 10 (A), Right = 5.",
+          explain: "1010 is A; 0101 is 5 → Hex A5.",
+          analogy: "A and 5 → A5.",
+          example: "1010 | 0101 → A5",
+          prompt: "Convert Binary 10100101 into Hexadecimal.",
+          clue: "Left 1010 = A, right 0101 = 5.",
+          match: "^A5$"
+        },
+        {
+          title: "Practice: Binary 11000011 to Hex",
+          concept: "Split 1100 | 0011: Left = 12 (C), Right = 3.",
+          explain: "1100 is C; 0011 is 3 → Hex C3.",
+          analogy: "C and 3 → C3.",
+          example: "1100 | 0011 → C3",
+          prompt: "Convert Binary 11000011 into Hexadecimal.",
+          clue: "Left 1100 = C (12), right 0011 = 3.",
+          match: "^C3$"
+        },
+        {
+          title: "Practice: Binary 11110000 to Hex",
+          concept: "Split 1111 | 0000: Left = F, Right = 0.",
+          explain: "1111 is F; 0000 is 0 → Hex F0.",
+          analogy: "F and 0 → F0.",
+          example: "1111 | 0000 → F0",
+          prompt: "Convert Binary 11110000 into Hexadecimal.",
+          clue: "Left 1111 = F, right 0000 = 0.",
+          match: "^F0$"
+        },
+        {
+          title: "Practice: Binary 11111111 to Hex",
+          concept: "Split 1111 | 1111: Both halves equal F.",
+          explain: "1111 is F, 1111 is F → Hex FF (255 in Decimal, used for pure white in CSS!).",
+          analogy: "FF is max byte value.",
+          example: "1111 | 1111 → FF",
+          prompt: "Convert Binary 11111111 into Hexadecimal.",
+          clue: "Both 4-bit groups are 1111 (F).",
+          match: "^FF$"
+        },
+        {
+          title: "Hexadecimal to Binary (Expand to 4 Bits)",
+          slides: [
+            {
+              title: "Slide 1: Turn Every Hex Character into 4 Bits",
+              concept: "4-Bit Expansion: Each Hex digit ALWAYS expands into 4 binary boxes [8][4][2][1] (include leading zeros!).",
+              explain: "Example: Hex A = 10. Using [8][4][2][1], 10 = 8 + 2 → 1010. Example: Hex 3 = 0 + 0 + 2 + 1 → 0011.",
+              analogy: "Unzipping 1 Hex character back into 4 binary switches.",
+              example: "Hex 5  →  0101  (4 + 1)\nHex C  →  1100  (12 = 8 + 4)"
+            }
+          ],
+          prompt: "Convert Hexadecimal A into 4-bit Binary.",
+          clue: "A = 10. Which boxes in [8][4][2][1] add up to 10? (8 + 2).",
+          match: "^1010$"
+        },
+        {
+          title: "Practice: Hex B to 4-bit Binary",
+          concept: "B = 11 = 8 + 2 + 1.",
+          explain: "In [8][4][2][1], turn ON 8, 2, and 1 → 1011.",
+          analogy: "8 + 0 + 2 + 1 = 11.",
+          example: "Hex B (11) → 1011",
+          prompt: "Convert Hexadecimal B into 4-bit Binary.",
+          clue: "1011.",
+          match: "^1011$"
+        },
+        {
+          title: "Practice: Hex C to 4-bit Binary",
+          concept: "C = 12 = 8 + 4.",
+          explain: "In [8][4][2][1], turn ON 8 and 4 → 1100.",
+          analogy: "8 + 4 + 0 + 0 = 12.",
+          example: "Hex C (12) → 1100",
+          prompt: "Convert Hexadecimal C into 4-bit Binary.",
+          clue: "1100.",
+          match: "^1100$"
+        },
+        {
+          title: "Practice: Hex D to 4-bit Binary",
+          concept: "D = 13 = 8 + 4 + 1.",
+          explain: "In [8][4][2][1], turn ON 8, 4, and 1 → 1101.",
+          analogy: "8 + 4 + 0 + 1 = 13.",
+          example: "Hex D (13) → 1101",
+          prompt: "Convert Hexadecimal D into 4-bit Binary.",
+          clue: "1101.",
+          match: "^1101$"
+        },
+        {
+          title: "Practice: Hex E to 4-bit Binary",
+          concept: "E = 14 = 8 + 4 + 2.",
+          explain: "In [8][4][2][1], turn ON 8, 4, and 2 → 1110.",
+          analogy: "8 + 4 + 2 + 0 = 14.",
+          example: "Hex E (14) → 1110",
+          prompt: "Convert Hexadecimal E into 4-bit Binary.",
+          clue: "1110.",
+          match: "^1110$"
+        },
+        {
+          title: "Practice: Hex F to 4-bit Binary",
+          concept: "F = 15 = 8 + 4 + 2 + 1.",
+          explain: "All four bits ON → 1111.",
+          analogy: "8 + 4 + 2 + 1 = 15.",
+          example: "Hex F (15) → 1111",
+          prompt: "Convert Hexadecimal F into 4-bit Binary.",
+          clue: "1111.",
+          match: "^1111$"
+        },
+        {
+          title: "Practice: Hex 6 to 4-bit Binary",
+          concept: "Include Leading Zero: 6 = 4 + 2, so in 4 bits [8][4][2][1] write 0110.",
+          explain: "Keep the leading 0 in [8] so the group stays 4 bits wide.",
+          analogy: "0 + 4 + 2 + 0 = 6.",
+          example: "Hex 6 → 0110",
+          prompt: "Convert Hexadecimal 6 into 4-bit Binary.",
+          clue: "Write 0110.",
+          match: "^0110$"
+        },
+        {
+          title: "2-Digit Hex to 8-Bit Binary",
+          slides: [
+            {
+              title: "Slide 1: Expand Each Digit to 4 Bits and Join",
+              concept: "Side-by-Side 4-Bit Blocks: Convert the first Hex digit into 4 bits, convert the second Hex digit into 4 bits, and write all 8 bits together.",
+              explain: "Example: Hex 1F → 1 becomes 0001, F becomes 1111 → 00011111.",
+              analogy: "Two 4-bit blocks joined into one 8-bit byte.",
+              example: "Hex 1F  →  0001 | 1111  →  00011111"
+            }
+          ],
+          prompt: "Convert Hexadecimal 1A into 8-bit Binary.",
+          clue: "1 = 0001, A (10) = 1010. Join them: 00011010.",
+          match: "^00011010$"
+        },
+        {
+          title: "Practice: Hex 2B to 8-bit Binary",
+          concept: "2 = 0010, B (11) = 1011.",
+          explain: "Join 0010 and 1011 → 00101011.",
+          analogy: "0010 | 1011.",
+          example: "Hex 2B → 00101011",
+          prompt: "Convert Hexadecimal 2B into 8-bit Binary.",
+          clue: "Write 0010 followed by 1011.",
+          match: "^00101011$"
+        },
+        {
+          title: "Practice: Hex A0 to 8-bit Binary",
+          concept: "A (10) = 1010, 0 = 0000.",
+          explain: "Join 1010 and 0000 → 10100000.",
+          analogy: "1010 | 0000.",
+          example: "Hex A0 → 10100000",
+          prompt: "Convert Hexadecimal A0 into 8-bit Binary.",
+          clue: "Write 1010 followed by 0000.",
+          match: "^10100000$"
+        },
+        {
+          title: "Practice: Hex C5 to 8-bit Binary",
+          concept: "C (12) = 1100, 5 = 0101.",
+          explain: "Join 1100 and 0101 → 11000101.",
+          analogy: "1100 | 0101.",
+          example: "Hex C5 → 11000101",
+          prompt: "Convert Hexadecimal C5 into 8-bit Binary.",
+          clue: "Write 1100 followed by 0101.",
+          match: "^11000101$"
+        },
+        {
+          title: "Practice: Hex F9 to 8-bit Binary",
+          concept: "F (15) = 1111, 9 = 1001.",
+          explain: "Join 1111 and 1001 → 11111001.",
+          analogy: "1111 | 1001.",
+          example: "Hex F9 → 11111001",
+          prompt: "Convert Hexadecimal F9 into 8-bit Binary.",
+          clue: "Write 1111 followed by 1001.",
+          match: "^11111001$"
+        }
+      ]
+    },
+
+    /* =========================================================================
+       PART 5: BINARY <-> OCTAL (25 TASKS)
+       ========================================================================= */
+    {
+      title: "Binary ⇄ Octal (25 Tasks)",
+      tasks: [
+        {
+          title: "The 3-Bit Octal Shortcut",
+          slides: [
+            {
+              title: "Slide 1: Why 3 Binary Bits = 1 Octal Digit",
+              concept: "4-2-1 Triplet Match: Three binary boxes [4][2][1] make numbers from 0 (000) to 7 (111). Octal has 8 digits (0 to 7) for those exact same values!",
+              explain: "That means EVERY 3 binary digits turn into ONE single Octal digit using the [4][2][1] boxes!",
+              analogy: "Hex uses groups of 4 bits; Octal uses groups of 3 bits.",
+              example: "Binary 000 = 0  → Octal 0\nBinary 101 = 5  → Octal 5\nBinary 111 = 7  → Octal 7"
+            }
+          ],
+          prompt: "Convert Binary 101 into Octal.",
+          clue: "Using [4][2][1], add 4 + 0 + 1.",
+          match: "^5$"
+        },
+        {
+          title: "Practice: Binary 010 to Octal",
+          concept: "0 + 2 + 0 = 2.",
+          explain: "In [4][2][1], only the middle [2] box is ON → Octal 2.",
+          analogy: "010 = 2.",
+          example: "Binary 010 → Octal 2",
+          prompt: "Convert Binary 010 into Octal.",
+          clue: "Only the 2-box is ON.",
+          match: "^2$"
+        },
+        {
+          title: "Practice: Binary 011 to Octal",
+          concept: "0 + 2 + 1 = 3.",
+          explain: "In [4][2][1], 2 and 1 are ON → Octal 3.",
+          analogy: "2 + 1 = 3.",
+          example: "Binary 011 → Octal 3",
+          prompt: "Convert Binary 011 into Octal.",
+          clue: "Add 2 + 1.",
+          match: "^3$"
+        },
+        {
+          title: "Practice: Binary 100 to Octal",
+          concept: "4 + 0 + 0 = 4.",
+          explain: "In [4][2][1], only the [4] box is ON → Octal 4.",
+          analogy: "100 = 4.",
+          example: "Binary 100 → Octal 4",
+          prompt: "Convert Binary 100 into Octal.",
+          clue: "4.",
+          match: "^4$"
+        },
+        {
+          title: "Practice: Binary 110 to Octal",
+          concept: "4 + 2 + 0 = 6.",
+          explain: "In [4][2][1], 4 and 2 are ON → Octal 6.",
+          analogy: "4 + 2 = 6.",
+          example: "Binary 110 → Octal 6",
+          prompt: "Convert Binary 110 into Octal.",
+          clue: "Add 4 + 2.",
+          match: "^6$"
+        },
+        {
+          title: "Practice: Binary 111 to Octal",
+          concept: "4 + 2 + 1 = 7.",
+          explain: "All three bits ON = Octal 7.",
+          analogy: "4 + 2 + 1 = 7.",
+          example: "Binary 111 → Octal 7",
+          prompt: "Convert Binary 111 into Octal.",
+          clue: "Add 4 + 2 + 1.",
+          match: "^7$"
+        },
+        {
+          title: "6-Bit Binary to 2-Digit Octal",
+          slides: [
+            {
+              title: "Slide 1: Split 6 Bits into Two 3-Bit Triplets",
+              concept: "Split into 3 + 3: Cut a 6-digit binary number into two groups of 3 bits. Convert each triplet using [4][2][1], then put both digits together.",
+              explain: "Example: 001 010 → Left triplet (001) = 1. Right triplet (010) = 2. Answer: Octal 12!",
+              analogy: "Solve left triplet [4][2][1], solve right triplet [4][2][1].",
+              example: "Binary:   001  |  010\n[421]:     1   |   2   →  Octal 12"
+            }
+          ],
+          prompt: "Convert Binary 001010 into Octal.",
+          clue: "Left 3 bits (001) = 1, right 3 bits (010) = 2 → 12.",
+          match: "^12$"
+        },
+        {
+          title: "Practice: Binary 001101 to Octal",
+          concept: "Split 001 | 101: Left = 1, Right = 5.",
+          explain: "001 is 1; 101 is 5 → Octal 15.",
+          analogy: "1 and 5 → 15.",
+          example: "001 | 101 → 15",
+          prompt: "Convert Binary 001101 into Octal.",
+          clue: "Left 001 = 1, right 101 = 5.",
+          match: "^15$"
+        },
+        {
+          title: "Practice: Binary 010111 to Octal",
+          concept: "Split 010 | 111: Left = 2, Right = 7.",
+          explain: "010 is 2; 111 is 7 → Octal 27.",
+          analogy: "2 and 7 → 27.",
+          example: "010 | 111 → 27",
+          prompt: "Convert Binary 010111 into Octal.",
+          clue: "Left 010 = 2, right 111 = 7.",
+          match: "^27$"
+        },
+        {
+          title: "Practice: Binary 011100 to Octal",
+          concept: "Split 011 | 100: Left = 3, Right = 4.",
+          explain: "011 is 3; 100 is 4 → Octal 34.",
+          analogy: "3 and 4 → 34.",
+          example: "011 | 100 → 34",
+          prompt: "Convert Binary 011100 into Octal.",
+          clue: "Left 011 = 3, right 100 = 4.",
+          match: "^34$"
+        },
+        {
+          title: "Practice: Binary 101010 to Octal",
+          concept: "Split 101 | 010: Left = 5, Right = 2.",
+          explain: "101 is 5; 010 is 2 → Octal 52.",
+          analogy: "5 and 2 → 52.",
+          example: "101 | 010 → 52",
+          prompt: "Convert Binary 101010 into Octal.",
+          clue: "Left 101 = 5, right 010 = 2.",
+          match: "^52$"
+        },
+        {
+          title: "Practice: Binary 110001 to Octal",
+          concept: "Split 110 | 001: Left = 6, Right = 1.",
+          explain: "110 is 6; 001 is 1 → Octal 61.",
+          analogy: "6 and 1 → 61.",
+          example: "110 | 001 → 61",
+          prompt: "Convert Binary 110001 into Octal.",
+          clue: "Left 110 = 6, right 001 = 1.",
+          match: "^61$"
+        },
+        {
+          title: "Practice: Binary 111111 to Octal",
+          concept: "Split 111 | 111: Both triplets equal 7.",
+          explain: "111 is 7, 111 is 7 → Octal 77.",
+          analogy: "7 and 7 → 77.",
+          example: "111 | 111 → 77",
+          prompt: "Convert Binary 111111 into Octal.",
+          clue: "Both 3-bit groups are 111 (7).",
+          match: "^77$"
+        },
+        {
+          title: "Octal to Binary (Expand to 3 Bits)",
+          slides: [
+            {
+              title: "Slide 1: Turn Each Octal Digit into 3 Bits",
+              concept: "3-Bit Expansion: Each Octal digit (0–7) expands into 3 binary boxes [4][2][1] (include leading zeros!).",
+              explain: "Example: Octal 5 = 4 + 1 → 101. Example: Octal 2 = 0 + 2 + 0 → 010.",
+              analogy: "Each Octal digit becomes a 3-bit triplet.",
+              example: "Octal 3  →  011  (2 + 1)\nOctal 6  →  110  (4 + 2)"
+            }
+          ],
+          prompt: "Convert Octal 4 into 3-bit Binary.",
+          clue: "In [4][2][1], turn ON 4 and keep 2 and 1 OFF → 100.",
+          match: "^100$"
+        },
+        {
+          title: "Practice: Octal 1 to 3-bit Binary",
+          concept: "Include Leading Zeros: 1 in 3 bits [4][2][1] is 001.",
+          explain: "0 + 0 + 1 = 1 → 001.",
+          analogy: "001.",
+          example: "Octal 1 → 001",
+          prompt: "Convert Octal 1 into 3-bit Binary.",
+          clue: "Write 001.",
+          match: "^001$"
+        },
+        {
+          title: "Practice: Octal 2 to 3-bit Binary",
+          concept: "2 in [4][2][1] is 010.",
+          explain: "0 + 2 + 0 = 2 → 010.",
+          analogy: "010.",
+          example: "Octal 2 → 010",
+          prompt: "Convert Octal 2 into 3-bit Binary.",
+          clue: "Write 010.",
+          match: "^010$"
+        },
+        {
+          title: "Practice: Octal 3 to 3-bit Binary",
+          concept: "3 = 2 + 1 → 011.",
+          explain: "In [4][2][1], 0 + 2 + 1 = 3 → 011.",
+          analogy: "011.",
+          example: "Octal 3 → 011",
+          prompt: "Convert Octal 3 into 3-bit Binary.",
+          clue: "Write 011.",
+          match: "^011$"
+        },
+        {
+          title: "Practice: Octal 5 to 3-bit Binary",
+          concept: "5 = 4 + 1 → 101.",
+          explain: "In [4][2][1], 4 + 0 + 1 = 5 → 101.",
+          analogy: "101.",
+          example: "Octal 5 → 101",
+          prompt: "Convert Octal 5 into 3-bit Binary.",
+          clue: "Write 101.",
+          match: "^101$"
+        },
+        {
+          title: "Practice: Octal 6 to 3-bit Binary",
+          concept: "6 = 4 + 2 → 110.",
+          explain: "In [4][2][1], 4 + 2 + 0 = 6 → 110.",
+          analogy: "110.",
+          example: "Octal 6 → 110",
+          prompt: "Convert Octal 6 into 3-bit Binary.",
+          clue: "Write 110.",
+          match: "^110$"
+        },
+        {
+          title: "Practice: Octal 7 to 3-bit Binary",
+          concept: "7 = 4 + 2 + 1 → 111.",
+          explain: "All three boxes ON → 111.",
+          analogy: "111.",
+          example: "Octal 7 → 111",
+          prompt: "Convert Octal 7 into 3-bit Binary.",
+          clue: "Write 111.",
+          match: "^111$"
+        },
+        {
+          title: "2-Digit Octal to 6-Bit Binary",
+          slides: [
+            {
+              title: "Slide 1: Expand Each Octal Digit to 3 Bits",
+              concept: "Side-by-Side Triplets: Turn the left digit into 3 bits, turn the right digit into 3 bits, and join all 6 bits together.",
+              explain: "Example: Octal 15 → 1 becomes 001, 5 becomes 101 → 001101.",
+              analogy: "Two 3-bit triplets side-by-side.",
+              example: "Octal 15  →  001 | 101  →  001101"
+            }
+          ],
+          prompt: "Convert Octal 12 into 6-bit Binary.",
+          clue: "1 = 001, 2 = 010. Join them: 001010.",
+          match: "^001010$"
+        },
+        {
+          title: "Practice: Octal 24 to 6-bit Binary",
+          concept: "2 = 010, 4 = 100.",
+          explain: "Join 010 and 100 → 010100.",
+          analogy: "010 | 100.",
+          example: "Octal 24 → 010100",
+          prompt: "Convert Octal 24 into 6-bit Binary.",
+          clue: "Write 010 followed by 100.",
+          match: "^010100$"
+        },
+        {
+          title: "Practice: Octal 37 to 6-bit Binary",
+          concept: "3 = 011, 7 = 111.",
+          explain: "Join 011 and 111 → 011111.",
+          analogy: "011 | 111.",
+          example: "Octal 37 → 011111",
+          prompt: "Convert Octal 37 into 6-bit Binary.",
+          clue: "Write 011 followed by 111.",
+          match: "^011111$"
+        },
+        {
+          title: "Practice: Octal 53 to 6-bit Binary",
+          concept: "5 = 101, 3 = 011.",
+          explain: "Join 101 and 011 → 101011.",
+          analogy: "101 | 011.",
+          example: "Octal 53 → 101011",
+          prompt: "Convert Octal 53 into 6-bit Binary.",
+          clue: "Write 101 followed by 011.",
+          match: "^101011$"
+        },
+        {
+          title: "Practice: Octal 70 to 6-bit Binary",
+          concept: "7 = 111, 0 = 000.",
+          explain: "Join 111 and 000 → 111000.",
+          analogy: "111 | 000.",
+          example: "Octal 70 → 111000",
+          prompt: "Convert Octal 70 into 6-bit Binary.",
+          clue: "Write 111 followed by 000.",
+          match: "^111000$"
+        }
+      ]
+    },
+
+    /* =========================================================================
+       PART 6: OCTAL <-> HEXADECIMAL (25 TASKS)
+       ========================================================================= */
+    {
+      title: "Octal ⇄ Hexadecimal (25 Tasks)",
+      tasks: [
+        {
+          title: "The Binary Bridge Method",
+          slides: [
+            {
+              title: "Slide 1: Never Convert Octal ↔ Hex Directly!",
+              concept: "The Binary Bridge: Octal (groups of 3) and Hex (groups of 4) don't divide evenly into each other. Instead, use Binary as a bridge in the middle!",
+              explain: "To go from Octal → Hex:\nStep 1: Expand each Octal digit into 3 binary bits.\nStep 2: Regroup those bits into 4s (from right to left) and convert to Hex!",
+              analogy: "Like taking a ferry across a river instead of trying to jump it in one leap.",
+              example: "Octal 12:\nStep 1 (3-bit): 001  010  →  001010\nStep 2 (4-bit): 00 | 1010  →  1010 = Hex A"
+            },
+            {
+              title: "Slide 2: Another Worked Example (Octal 17 → Hex)",
+              concept: "Follow the Two Steps: Expand to 3-bit triplets, then read the right 4 bits.",
+              explain: "Octal 17:\n• 1 = 001, 7 = 111 → Binary 001111.\n• Take the right 4 bits: 1111 = 15 = Hex F! (Left 00 is just 0).",
+              analogy: "Octal 17 = Decimal 15 = Hex F.",
+              example: "Octal 17 → 001 111 → 1111 → Hex F"
+            }
+          ],
+          prompt: "Convert Octal 12 into Hexadecimal.",
+          clue: "Octal 12 = 001 010 in binary. Take the last 4 bits (1010 = 10), which is Hex A.",
+          match: "^A$"
+        },
+        {
+          title: "Practice: Octal 13 to Hex",
+          concept: "Octal 13 = 001 011 → Binary 1011 (11) = Hex B.",
+          explain: "1 is 001, 3 is 011 → 1011 = 11 = B.",
+          analogy: "Octal 13 = 11 = Hex B.",
+          example: "Octal 13 → 001 011 → 1011 → Hex B",
+          prompt: "Convert Octal 13 into Hexadecimal.",
+          clue: "11 in Hex is B.",
+          match: "^B$"
+        },
+        {
+          title: "Practice: Octal 14 to Hex",
+          concept: "Octal 14 = 001 100 → Binary 1100 (12) = Hex C.",
+          explain: "1 is 001, 4 is 100 → 1100 = 12 = C.",
+          analogy: "Octal 14 = 12 = Hex C.",
+          example: "Octal 14 → 001 100 → 1100 → Hex C",
+          prompt: "Convert Octal 14 into Hexadecimal.",
+          clue: "12 in Hex is C.",
+          match: "^C$"
+        },
+        {
+          title: "Practice: Octal 15 to Hex",
+          concept: "Octal 15 = 001 101 → Binary 1101 (13) = Hex D.",
+          explain: "1 is 001, 5 is 101 → 1101 = 13 = D.",
+          analogy: "Octal 15 = 13 = Hex D.",
+          example: "Octal 15 → 001 101 → 1101 → Hex D",
+          prompt: "Convert Octal 15 into Hexadecimal.",
+          clue: "13 in Hex is D.",
+          match: "^D$"
+        },
+        {
+          title: "Practice: Octal 16 to Hex",
+          concept: "Octal 16 = 001 110 → Binary 1110 (14) = Hex E.",
+          explain: "1 is 001, 6 is 110 → 1110 = 14 = E.",
+          analogy: "Octal 16 = 14 = Hex E.",
+          example: "Octal 16 → 001 110 → 1110 → Hex E",
+          prompt: "Convert Octal 16 into Hexadecimal.",
+          clue: "14 in Hex is E.",
+          match: "^E$"
+        },
+        {
+          title: "Practice: Octal 17 to Hex",
+          concept: "Octal 17 = 001 111 → Binary 1111 (15) = Hex F.",
+          explain: "1 is 001, 7 is 111 → 1111 = 15 = F.",
+          analogy: "Octal 17 = 15 = Hex F.",
+          example: "Octal 17 → 001 111 → 1111 → Hex F",
+          prompt: "Convert Octal 17 into Hexadecimal.",
+          clue: "15 in Hex is F.",
+          match: "^F$"
+        },
+        {
+          title: "2-Digit Hex Results from Octal",
+          slides: [
+            {
+              title: "Slide 1: Regrouping 6 Bits into 2 + 4 Bits",
+              concept: "2-Digit Hex Output: When the left two bits aren't zero, they form the first Hex digit!",
+              explain: "Example: Octal 20:\n• 2 = 010, 0 = 000 → Binary 010000.\n• Split from right into 4s: 01 | 0000.\n• Left (01) = 1, Right (0000) = 0 → Hex 10!",
+              analogy: "Always group 4 bits starting from the RIGHT.",
+              example: "Octal 20 → 010 000 → 01 | 0000 → Hex 10"
+            }
+          ],
+          prompt: "Convert Octal 20 into Hexadecimal.",
+          clue: "Octal 20 is 16 in decimal, which is 10 in Hex.",
+          match: "^10$"
+        },
+        {
+          title: "Practice: Octal 22 to Hex",
+          concept: "Octal 22 → 010 010 → 01 | 0010 → Hex 12.",
+          explain: "Left is 1, right 0010 is 2 → Hex 12.",
+          analogy: "Octal 22 = 18 = Hex 12.",
+          example: "Octal 22 → 010 010 → 01 | 0010 → Hex 12",
+          prompt: "Convert Octal 22 into Hexadecimal.",
+          clue: "12.",
+          match: "^12$"
+        },
+        {
+          title: "Practice: Octal 32 to Hex",
+          concept: "Octal 32 → 011 010 → 01 | 1010 → Hex 1A.",
+          explain: "Left (01) = 1, right (1010) = 10 (A) → Hex 1A.",
+          analogy: "Octal 32 = 26 = Hex 1A.",
+          example: "Octal 32 → 011 010 → 01 | 1010 → Hex 1A",
+          prompt: "Convert Octal 32 into Hexadecimal.",
+          clue: "Left is 1, right 1010 is A → 1A.",
+          match: "^1A$"
+        },
+        {
+          title: "Practice: Octal 37 to Hex",
+          concept: "Octal 37 → 011 111 → 01 | 1111 → Hex 1F.",
+          explain: "Left (01) = 1, right (1111) = 15 (F) → Hex 1F.",
+          analogy: "Octal 37 = 31 = Hex 1F.",
+          example: "Octal 37 → 011 111 → 01 | 1111 → Hex 1F",
+          prompt: "Convert Octal 37 into Hexadecimal.",
+          clue: "Left is 1, right 1111 is F → 1F.",
+          match: "^1F$"
+        },
+        {
+          title: "Practice: Octal 40 to Hex",
+          concept: "Octal 40 → 100 000 → 10 | 0000 → Hex 20.",
+          explain: "Left (10) = 2, right (0000) = 0 → Hex 20.",
+          analogy: "Octal 40 = 32 = Hex 20.",
+          example: "Octal 40 → 100 000 → 10 | 0000 → Hex 20",
+          prompt: "Convert Octal 40 into Hexadecimal.",
+          clue: "20.",
+          match: "^20$"
+        },
+        {
+          title: "Practice: Octal 77 to Hex",
+          concept: "Octal 77 → 111 111 → 11 | 1111 → Hex 3F.",
+          explain: "Left (11) = 3, right (1111) = 15 (F) → Hex 3F.",
+          analogy: "Octal 77 = 63 = Hex 3F.",
+          example: "Octal 77 → 111 111 → 11 | 1111 → Hex 3F",
+          prompt: "Convert Octal 77 into Hexadecimal.",
+          clue: "Left 11 = 3, right 1111 = F → 3F.",
+          match: "^3F$"
+        },
+        {
+          title: "Hexadecimal to Octal (Reverse Bridge)",
+          slides: [
+            {
+              title: "Slide 1: Hex → 4-Bit Binary → 3-Bit Octal",
+              concept: "Reverse Binary Bridge:\nStep 1: Expand each Hex digit into 4 binary bits.\nStep 2: Regroup into 3-bit triplets (from right to left) and convert to Octal!",
+              explain: "Example: Hex A:\n• Hex A = 1010 (4 bits).\n• Group into 3s from right: 001 | 010.\n• 001 = 1, 010 = 2 → Octal 12!",
+              analogy: "4-bit blocks split into 3-bit triplets.",
+              example: "Hex A → 1010 → 001 | 010 → Octal 12"
+            }
+          ],
+          prompt: "Convert Hexadecimal A into Octal.",
+          clue: "Hex A = 1010 → 001 010 → 1 and 2 → 12.",
+          match: "^12$"
+        },
+        {
+          title: "Practice: Hex B to Octal",
+          concept: "Hex B = 1011 → 001 | 011 → Octal 13.",
+          explain: "001 = 1, 011 = 3 → Octal 13.",
+          analogy: "Hex B = 11 = Octal 13.",
+          example: "Hex B → 1011 → 001 | 011 → Octal 13",
+          prompt: "Convert Hexadecimal B into Octal.",
+          clue: "13.",
+          match: "^13$"
+        },
+        {
+          title: "Practice: Hex C to Octal",
+          concept: "Hex C = 1100 → 001 | 100 → Octal 14.",
+          explain: "001 = 1, 100 = 4 → Octal 14.",
+          analogy: "Hex C = 12 = Octal 14.",
+          example: "Hex C → 1100 → 001 | 100 → Octal 14",
+          prompt: "Convert Hexadecimal C into Octal.",
+          clue: "14.",
+          match: "^14$"
+        },
+        {
+          title: "Practice: Hex D to Octal",
+          concept: "Hex D = 1101 → 001 | 101 → Octal 15.",
+          explain: "001 = 1, 101 = 5 → Octal 15.",
+          analogy: "Hex D = 13 = Octal 15.",
+          example: "Hex D → 1101 → 001 | 101 → Octal 15",
+          prompt: "Convert Hexadecimal D into Octal.",
+          clue: "15.",
+          match: "^15$"
+        },
+        {
+          title: "Practice: Hex E to Octal",
+          concept: "Hex E = 1110 → 001 | 110 → Octal 16.",
+          explain: "001 = 1, 110 = 6 → Octal 16.",
+          analogy: "Hex E = 14 = Octal 16.",
+          example: "Hex E → 1110 → 001 | 110 → Octal 16",
+          prompt: "Convert Hexadecimal E into Octal.",
+          clue: "16.",
+          match: "^16$"
+        },
+        {
+          title: "Practice: Hex F to Octal",
+          concept: "Hex F = 1111 → 001 | 111 → Octal 17.",
+          explain: "001 = 1, 111 = 7 → Octal 17.",
+          analogy: "Hex F = 15 = Octal 17.",
+          example: "Hex F → 1111 → 001 | 111 → Octal 17",
+          prompt: "Convert Hexadecimal F into Octal.",
+          clue: "17.",
+          match: "^17$"
+        },
+        {
+          title: "Practice: Hex 10 to Octal",
+          concept: "Hex 10 = 0001 0000 → 010 | 000 → Octal 20.",
+          explain: "010 = 2, 000 = 0 → Octal 20.",
+          analogy: "Hex 10 = 16 = Octal 20.",
+          example: "Hex 10 → 0001 0000 → 010 | 000 → Octal 20",
+          prompt: "Convert Hexadecimal 10 into Octal.",
+          clue: "20.",
+          match: "^20$"
+        },
+        {
+          title: "Practice: Hex 12 to Octal",
+          concept: "Hex 12 = 0001 0010 → 010 | 010 → Octal 22.",
+          explain: "010 = 2, 010 = 2 → Octal 22.",
+          analogy: "Hex 12 = 18 = Octal 22.",
+          example: "Hex 12 → 0001 0010 → 010 | 010 → Octal 22",
+          prompt: "Convert Hexadecimal 12 into Octal.",
+          clue: "22.",
+          match: "^22$"
+        },
+        {
+          title: "Practice: Hex 18 to Octal",
+          concept: "Hex 18 = 0001 1000 → 011 | 000 → Octal 30.",
+          explain: "011 = 3, 000 = 0 → Octal 30.",
+          analogy: "Hex 18 = 24 = Octal 30.",
+          example: "Hex 18 → 0001 1000 → 011 | 000 → Octal 30",
+          prompt: "Convert Hexadecimal 18 into Octal.",
+          clue: "30.",
+          match: "^30$"
+        },
+        {
+          title: "Practice: Hex 1A to Octal",
+          concept: "Hex 1A = 0001 1010 → 011 | 010 → Octal 32.",
+          explain: "011 = 3, 010 = 2 → Octal 32.",
+          analogy: "Hex 1A = 26 = Octal 32.",
+          example: "Hex 1A → 0001 1010 → 011 | 010 → Octal 32",
+          prompt: "Convert Hexadecimal 1A into Octal.",
+          clue: "32.",
+          match: "^32$"
+        },
+        {
+          title: "Practice: Hex 1F to Octal",
+          concept: "Hex 1F = 0001 1111 → 011 | 111 → Octal 37.",
+          explain: "011 = 3, 111 = 7 → Octal 37.",
+          analogy: "Hex 1F = 31 = Octal 37.",
+          example: "Hex 1F → 0001 1111 → 011 | 111 → Octal 37",
+          prompt: "Convert Hexadecimal 1F into Octal.",
+          clue: "37.",
+          match: "^37$"
+        },
+        {
+          title: "Practice: Hex 20 to Octal",
+          concept: "Hex 20 = 0010 0000 → 100 | 000 → Octal 40.",
+          explain: "100 = 4, 000 = 0 → Octal 40.",
+          analogy: "Hex 20 = 32 = Octal 40.",
+          example: "Hex 20 → 0010 0000 → 100 | 000 → Octal 40",
+          prompt: "Convert Hexadecimal 20 into Octal.",
+          clue: "40.",
+          match: "^40$"
+        },
+        {
+          title: "Practice: Hex 3F to Octal",
+          concept: "Hex 3F = 0011 1111 → 111 | 111 → Octal 77.",
+          explain: "111 = 7, 111 = 7 → Octal 77.",
+          analogy: "Hex 3F = 63 = Octal 77.",
+          example: "Hex 3F → 0011 1111 → 111 | 111 → Octal 77",
+          prompt: "Convert Hexadecimal 3F into Octal.",
+          clue: "77.",
+          match: "^77$"
+        }
+      ]
+    }
+  ]
+};
