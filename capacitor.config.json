@@ -1,0 +1,6 @@
+{
+  "appId": "com.sayeedakhter.codestep",
+  "appName": "CodeStep",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
