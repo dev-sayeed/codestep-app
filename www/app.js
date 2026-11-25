@@ -82,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo(0, 0);
   }
 
-  // Get Started Button
   const getStartedBtn = document.getElementById("get-started-btn");
   if (getStartedBtn) {
     getStartedBtn.addEventListener("click", () => {
@@ -90,7 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Category Cards
   document.querySelectorAll(".cat-card").forEach(btn => {
     btn.addEventListener("click", () => {
       state.onboarded = true;
@@ -106,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
     switchThemeBtn.addEventListener("click", () => showTopScreen("category-screen"));
   }
 
-  // Bottom Nav Tabs
   document.querySelectorAll(".nav-tab").forEach(btn => {
     btn.addEventListener("click", () => {
       if (btn.dataset.tab === "home-screen") renderCourses();
@@ -115,7 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Block Copy/Paste safely
   const exampleBox = document.getElementById("example-box");
   const taskInput = document.getElementById("task-input");
   ["copy", "cut", "paste", "contextmenu"].forEach(evt => {
@@ -140,6 +136,102 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/\{ITEM\}/g, t.item)
       .replace(/\{item\}/g, t.item.toLowerCase())
       .replace(/\{NUM\}/g, t.num);
+  }
+
+  // Computes a visual or console output preview where applicable
+  function renderExampleOutput(courseKey, codeStr) {
+    const outBox = document.getElementById("output-box");
+    const outRender = document.getElementById("output-render");
+    outRender.className = "output-render";
+    outRender.innerHTML = "";
+
+    if (courseKey === "html") {
+      // Skip external broken images/links from navigating away, render safe HTML preview
+      if (/<img/i.test(codeStr)) {
+        outBox.classList.add("hidden");
+        return;
+      }
+      outRender.innerHTML = codeStr;
+      outRender.querySelectorAll("a").forEach(a => a.removeAttribute("href"));
+      outBox.classList.remove("hidden");
+      return;
+    }
+
+    if (courseKey === "css") {
+      const styleMatch = codeStr.match(/\{([^}]+)\}/);
+      if (!styleMatch || /display\s*:\s*none/i.test(codeStr) || /position\s*:\s*fixed/i.test(codeStr)) {
+        outBox.classList.add("hidden");
+        return;
+      }
+      const t = CATEGORIES[state.category] || CATEGORIES.sports;
+      const sample = document.createElement("div");
+      sample.style.cssText = styleMatch[1];
+      if (/flex|grid/i.test(styleMatch[1])) {
+        sample.innerHTML = `<span style="background:#E2E8F0;padding:3px 8px;border-radius:6px;">${t.word}</span><span style="background:#E2E8F0;padding:3px 8px;border-radius:6px;">${t.item}</span>`;
+      } else {
+        sample.textContent = `${t.word} Preview`;
+      }
+      outRender.appendChild(sample);
+      outBox.classList.remove("hidden");
+      return;
+    }
+
+    if (courseKey === "python") {
+      const t = CATEGORIES[state.category] || CATEGORIES.sports;
+      if (/print\s*\(\s*["']([^"']+)["']\s*\)/.test(codeStr)) {
+        const m = codeStr.match(/print\s*\(\s*["']([^"']+)["']\s*\)/);
+        outRender.classList.add("console-out");
+        outRender.textContent = m[1];
+        outBox.classList.remove("hidden");
+        return;
+      }
+      if (/print\s*\(\s*len\s*\(\s*["']([^"']+)["']\s*\)\s*\)/.test(codeStr)) {
+        const m = codeStr.match(/print\s*\(\s*len\s*\(\s*["']([^"']+)["']\s*\)\s*\)/);
+        outRender.classList.add("console-out");
+        outRender.textContent = String(m[1].length);
+        outBox.classList.remove("hidden");
+        return;
+      }
+      if (/\.upper\(\)/.test(codeStr)) {
+        outRender.classList.add("console-out");
+        outRender.textContent = t.word.toUpperCase();
+        outBox.classList.remove("hidden");
+        return;
+      }
+      if (/for\s+\w+\s+in\s+range\s*\(\s*3\s*\)/.test(codeStr)) {
+        outRender.classList.add("console-out");
+        outRender.textContent = "0\n1\n2";
+        outRender.style.whiteSpace = "pre";
+        outBox.classList.remove("hidden");
+        return;
+      }
+      outBox.classList.add("hidden");
+      return;
+    }
+
+    if (courseKey === "c") {
+      const t = CATEGORIES[state.category] || CATEGORIES.sports;
+      const printfStr = codeStr.match(/printf\s*\(\s*"([^"%\\]+)(?:\\n)?"\s*\)/);
+      if (printfStr) {
+        outRender.classList.add("console-out");
+        outRender.textContent = printfStr[1];
+        outBox.classList.remove("hidden");
+        return;
+      }
+      if (/printf\s*\(\s*"%d"/.test(codeStr)) {
+        outRender.classList.add("console-out");
+        outRender.textContent = String(t.num);
+        outBox.classList.remove("hidden");
+        return;
+      }
+      if (/printf\s*\(\s*"%f"/.test(codeStr)) {
+        outRender.classList.add("console-out");
+        outRender.textContent = "4.500000";
+        outBox.classList.remove("hidden");
+        return;
+      }
+      outBox.classList.add("hidden");
+    }
   }
 
   function getCourseSolvedCount(courseKey) {
@@ -226,6 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const course = ALL_COURSES[activeCourseKey];
     const mod = course.modules[mIdx];
     const item = mod.tasks[tIdx];
+    const themedExample = themeText(item.example);
 
     document.getElementById("step-counter").textContent = `${tIdx + 1}/${mod.tasks.length}`;
     document.getElementById("progress-fill").style.width = `${(tIdx / mod.tasks.length) * 100}%`;
@@ -234,7 +327,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("explain-title").textContent = themeText(item.title);
     document.getElementById("explain-body").textContent = themeText(item.explain);
     document.getElementById("explain-analogy").textContent = "💡 " + themeText(item.analogy);
-    document.getElementById("explain-code").textContent = themeText(item.example);
+    document.getElementById("explain-code").textContent = themedExample;
+
+    // Show or hide Output Preview depending on task
+    renderExampleOutput(activeCourseKey, themedExample);
 
     document.getElementById("task-tag").textContent = `CHALLENGE ${tIdx + 1} OF ${mod.tasks.length}`;
     document.getElementById("task-title").textContent = themeText(item.title);
